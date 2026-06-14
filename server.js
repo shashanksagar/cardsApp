@@ -19,11 +19,16 @@ if (!fs.existsSync(PROGRESS_FILE)) fs.writeFileSync(PROGRESS_FILE, JSON.stringif
 app.use(express.json());
 
 // Serve only public static assets — do NOT expose data/ (contains password hashes)
-app.use('/css',  express.static(path.join(__dirname, 'css')));
-app.use('/js',   express.static(path.join(__dirname, 'js')));
-app.use('/data/set2.json', express.static(path.join(__dirname, 'data', 'set2.json')));
-app.use('/data/set4.json', express.static(path.join(__dirname, 'data', 'set4.json')));
-// Serve index.html for root
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js',  express.static(path.join(__dirname, 'js')));
+
+// Serve question-set JSON files but block auth/progress data files
+const PRIVATE_DATA = new Set(['users.json', 'progress.json']);
+app.get('/data/:file', (req, res) => {
+  if (PRIVATE_DATA.has(req.params.file)) return res.status(404).end();
+  res.sendFile(path.join(DATA_DIR, req.params.file));
+});
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 // ─── Helpers ──────────────────────────────────────────────────────
