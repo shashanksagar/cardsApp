@@ -86,4 +86,36 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// ─── Auth middleware ───────────────────────────────────────────────
+function requireAuth(req, res, next) {
+  const token = req.body?.token || req.query?.token;
+  if (!token || !sessions[token]) return res.status(401).json({ error: 'Unauthorized' });
+  req.username = sessions[token];
+  next();
+}
+
+// ─── POST /api/progress ───────────────────────────────────────────
+app.post('/api/progress', requireAuth, (req, res) => {
+  try {
+    const { token, ...sessionData } = req.body;
+    const db = readJSON(PROGRESS_FILE);
+    db.sessions.push({ ...sessionData, userId: req.username, date: new Date().toISOString() });
+    writeJSON(PROGRESS_FILE, db);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─── GET /api/progress ────────────────────────────────────────────
+app.get('/api/progress', requireAuth, (req, res) => {
+  try {
+    const db = readJSON(PROGRESS_FILE);
+    const sessions = db.sessions.filter(s => s.userId === req.username);
+    res.json({ sessions });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.listen(PORT, () => console.log(`cardsApp running at http://localhost:${PORT}`));
