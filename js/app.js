@@ -1,5 +1,7 @@
 'use strict';
 
+const $ = id => document.getElementById(id);
+
 // ─── Dark mode ────────────────────────────────────────────────────
 (function () {
   if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
@@ -146,8 +148,6 @@ const state = {
 };
 
 // ─── DOM refs ─────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-
 const screens = {
   start:   $('screen-start'),
   exam:    $('screen-exam'),
