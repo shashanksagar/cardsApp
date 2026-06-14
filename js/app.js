@@ -22,6 +22,102 @@ document.querySelectorAll('.dark-toggle').forEach(btn => {
 // Init toggle icons on load
 setDarkMode(document.body.classList.contains('dark'));
 
+// ─── Auth state ───────────────────────────────────────────────────
+const auth = {
+  token:    localStorage.getItem('authToken') || null,
+  username: localStorage.getItem('authUser')  || null,
+};
+
+function saveAuth(token, username) {
+  auth.token    = token;
+  auth.username = username;
+  localStorage.setItem('authToken', token);
+  localStorage.setItem('authUser',  username);
+}
+
+function clearAuth() {
+  auth.token    = null;
+  auth.username = null;
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('authUser');
+}
+
+function updateUserChips() {
+  document.querySelectorAll('.user-chip').forEach(chip => {
+    if (auth.username) {
+      chip.innerHTML = `<span>👤 ${auth.username}</span><button onclick="logout()">Logout</button>`;
+      chip.classList.remove('hidden');
+    } else {
+      chip.classList.add('hidden');
+    }
+  });
+}
+
+function logout() {
+  clearAuth();
+  updateUserChips();
+  showModal();
+}
+
+// ─── Auth modal ───────────────────────────────────────────────────
+let currentTab = 'login';
+
+function showModal() {
+  $('modal-auth').classList.remove('hidden');
+  $('modal-error').textContent = '';
+  $('auth-username').value = '';
+  $('auth-password').value = '';
+  $('auth-confirm').value  = '';
+  switchTab('login');
+}
+
+function hideModal() {
+  $('modal-auth').classList.add('hidden');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  $('tab-login').classList.toggle('active', tab === 'login');
+  $('tab-register').classList.toggle('active', tab === 'register');
+  $('field-confirm').style.display = tab === 'register' ? '' : 'none';
+  $('btn-auth-submit').textContent = tab === 'login' ? 'Login' : 'Register';
+  $('modal-error').textContent = '';
+}
+
+$('btn-auth-submit').addEventListener('click', async () => {
+  const username = $('auth-username').value.trim();
+  const password = $('auth-password').value;
+  const confirm  = $('auth-confirm').value;
+  const errorEl  = $('modal-error');
+
+  if (!username || !password) { errorEl.textContent = 'Username and password required.'; return; }
+  if (currentTab === 'register' && password !== confirm) {
+    errorEl.textContent = 'Passwords do not match.'; return;
+  }
+
+  const endpoint = currentTab === 'login' ? '/api/login' : '/api/register';
+  try {
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) { errorEl.textContent = data.error || 'Something went wrong.'; return; }
+    saveAuth(data.token, data.username);
+    updateUserChips();
+    hideModal();
+  } catch (e) {
+    errorEl.textContent = 'Cannot reach server. Is it running?';
+  }
+});
+
+// ─── On load: check auth ──────────────────────────────────────────
+updateUserChips();
+if (!auth.token) {
+  showModal();
+}
+
 // ─── State ────────────────────────────────────────────────────────
 const state = {
   questions:    [],       // loaded + shuffled
