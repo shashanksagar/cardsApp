@@ -40,6 +40,7 @@ function makeToken() {
   return crypto.randomBytes(32).toString('hex');
 }
 
+// NOTE: sessions are in-memory only — all users are logged out on server restart.
 // In-memory token store: { token: username }
 const sessions = {};
 
@@ -47,36 +48,42 @@ const sessions = {};
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+  try {
+    const db = readJSON(USERS_FILE);
+    if (db.users.find(u => u.username === username)) {
+      return res.status(409).json({ error: 'Username already taken' });
+    }
 
-  const db = readJSON(USERS_FILE);
-  if (db.users.find(u => u.username === username)) {
-    return res.status(409).json({ error: 'Username already taken' });
+    const hash = await bcrypt.hash(password, 10);
+    db.users.push({ username, password: hash, createdAt: new Date().toISOString() });
+    writeJSON(USERS_FILE, db);
+
+    const token = makeToken();
+    sessions[token] = username;
+    res.json({ token, username });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
   }
-
-  const hash = await bcrypt.hash(password, 10);
-  db.users.push({ username, password: hash, createdAt: new Date().toISOString() });
-  writeJSON(USERS_FILE, db);
-
-  const token = makeToken();
-  sessions[token] = username;
-  res.json({ token, username });
 });
 
 // ─── POST /api/login ──────────────────────────────────────────────
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+  try {
+    const db = readJSON(USERS_FILE);
+    const user = db.users.find(u => u.username === username);
+    if (!user) return res.status(401).json({ error: 'Invalid username or password' });
 
-  const db = readJSON(USERS_FILE);
-  const user = db.users.find(u => u.username === username);
-  if (!user) return res.status(401).json({ error: 'Invalid username or password' });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ error: 'Invalid username or password' });
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(401).json({ error: 'Invalid username or password' });
-
-  const token = makeToken();
-  sessions[token] = username;
-  res.json({ token, username });
+    const token = makeToken();
+    sessions[token] = username;
+    res.json({ token, username });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 app.listen(PORT, () => console.log(`cardsApp running at http://localhost:${PORT}`));
