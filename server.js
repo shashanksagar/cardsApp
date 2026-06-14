@@ -111,8 +111,8 @@ app.post('/api/progress', requireAuth, (req, res) => {
 app.get('/api/progress', requireAuth, (req, res) => {
   try {
     const db = readJSON(PROGRESS_FILE);
-    const sessions = db.sessions.filter(s => s.userId === req.username);
-    res.json({ sessions });
+    const userSessions = db.sessions.filter(s => s.userId === req.username);
+    res.json({ sessions: userSessions });
   } catch (e) {
     res.status(500).json({ error: 'Server error' });
   }
