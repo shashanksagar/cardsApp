@@ -1,5 +1,27 @@
 'use strict';
 
+// ─── Dark mode ────────────────────────────────────────────────────
+(function () {
+  if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+})();
+
+function setDarkMode(on) {
+  document.body.classList.toggle('dark', on);
+  localStorage.setItem('theme', on ? 'dark' : 'light');
+  document.querySelectorAll('.dark-toggle').forEach(btn => {
+    btn.textContent = on ? '☀️' : '🌙';
+  });
+}
+
+document.querySelectorAll('.dark-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setDarkMode(!document.body.classList.contains('dark'));
+  });
+});
+
+// Init toggle icons on load
+setDarkMode(document.body.classList.contains('dark'));
+
 // ─── State ────────────────────────────────────────────────────────
 const state = {
   questions:    [],       // loaded + shuffled
