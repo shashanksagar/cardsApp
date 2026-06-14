@@ -647,12 +647,21 @@ $('btn-restart').addEventListener('click', () => {
 });
 
 // ─── History screen ───────────────────────────────────────────────
+let historyReturnScreen = 'results';
+
 $('btn-history').addEventListener('click', async () => {
+  historyReturnScreen = 'results';
   await buildHistory();
   showScreen('history');
 });
 
-$('btn-back-from-history').addEventListener('click', () => showScreen('results'));
+$('btn-history-start').addEventListener('click', async () => {
+  historyReturnScreen = 'start';
+  await buildHistory();
+  showScreen('history');
+});
+
+$('btn-back-from-history').addEventListener('click', () => showScreen(historyReturnScreen));
 
 async function buildHistory() {
   const container = $('history-content');
