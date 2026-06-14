@@ -1,0 +1,44 @@
+<h2>Where should user accounts & progress be stored?</h2>
+<p class="subtitle">This is a vanilla JS app with no backend server. Pick the storage approach that fits how you'll use the app.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Browser localStorage (Recommended)</h3>
+      <p>User accounts and all exam history stored in the browser. Works offline, zero setup, instant. Data lives on this device/browser only — no cross-device sync.</p>
+      <ul style="margin-top:0.5rem;font-size:0.85rem;color:#555">
+        <li>✅ No server needed</li>
+        <li>✅ Works today, no extra files</li>
+        <li>❌ Data lost if browser storage cleared</li>
+        <li>❌ Can't log in from another device</li>
+      </ul>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>JSON file on disk (via a tiny Node server)</h3>
+      <p>A small Express/Node backend stores users.json and progress.json locally. Data persists across browsers/devices on the same machine.</p>
+      <ul style="margin-top:0.5rem;font-size:0.85rem;color:#555">
+        <li>✅ Survives browser clears</li>
+        <li>✅ Could be shared on a local network</li>
+        <li>❌ Requires running a Node server</li>
+        <li>❌ More setup and files to maintain</li>
+      </ul>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Firebase / Supabase (cloud backend)</h3>
+      <p>Free-tier cloud database. Real cross-device login, proper auth, data never lost. Requires internet and a free account setup.</p>
+      <ul style="margin-top:0.5rem;font-size:0.85rem;color:#555">
+        <li>✅ Real multi-device login</li>
+        <li>✅ Data always safe</li>
+        <li>❌ Needs internet connection</li>
+        <li>❌ Account setup + API keys required</li>
+      </ul>
+    </div>
+  </div>
+</div>

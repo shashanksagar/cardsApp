@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salesforce Cert Exam Prep</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ SCREEN: START ══ -->
+<div id="screen-start" class="screen active">
+  <div class="card start-card">
+    <div class="logo">☁️</div>
+    <h1>Salesforce Cert Exam Prep</h1>
+    <p class="subtitle">Certification Exam Practice</p>
+
+    <div class="form-group">
+      <label>Exam &amp; Question Set</label>
+      <select id="select-set">
+        <optgroup label="IAM Architect">
+          <option value="set2">Set 2</option>
+          <option value="set4">Set 4</option>
+        </optgroup>
+        <optgroup label="Integration Architect">
+          <option value="int_set1">Set 1 (Sep 2022)</option>
+          <option value="int_wi21">Wi21</option>
+          <option value="int_set3">Set 3</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Mode</label>
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode="practice">
+          <span class="mode-icon">📚</span>
+          <strong>Practice</strong>
+          <small>See answer after each question</small>
+        </button>
+        <button class="mode-btn" data-mode="exam">
+          <span class="mode-icon">⏱</span>
+          <strong>Timed Exam</strong>
+          <small>64 questions · 1h 32m</small>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="chk-shuffle" checked />
+        Shuffle questions
+      </label>
+    </div>
+
+    <button id="btn-start" class="btn btn-primary btn-lg">Start</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SCREEN: EXAM ═══ -->
+<div id="screen-exam" class="screen">
+  <header class="exam-header">
+    <div class="header-left">
+      <span id="header-mode-label" class="mode-badge"></span>
+      <span id="header-set-label" class="set-badge"></span>
+    </div>
+    <div class="header-center">
+      <span id="progress-text">Q 1 / 64</span>
+      <div class="progress-bar-wrap">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="timer-display" class="timer hidden">1:32:00</span>
+      <button id="btn-quit" class="btn btn-ghost btn-sm">✕ Quit</button>
+    </div>
+  </header>
+
+  <main class="exam-main">
+    <div class="question-card">
+      <div class="question-meta">
+        <span id="q-number" class="q-number">Question 1</span>
+        <span id="q-topic" class="q-topic"></span>
+        <span id="q-type-badge" class="q-type-badge"></span>
+      </div>
+      <p id="q-text" class="q-text"></p>
+
+      <div id="choices-list" class="choices-list"></div>
+
+      <!-- Practice mode: show answer feedback inline -->
+      <div id="feedback-box" class="feedback-box hidden"></div>
+
+      <div class="question-actions">
+        <!-- Exam mode only -->
+        <button id="btn-flag" class="btn btn-ghost btn-sm hidden">🚩 Mark for Review</button>
+        <!-- Both modes -->
+        <button id="btn-check" class="btn btn-primary hidden">Check Answer</button>
+        <button id="btn-next" class="btn btn-primary hidden">Next →</button>
+        <!-- Exam mode final question -->
+        <button id="btn-submit" class="btn btn-success hidden">Submit Exam</button>
+      </div>
+    </div>
+
+    <!-- Exam mode: flagged questions nav -->
+    <aside id="exam-nav" class="exam-nav hidden">
+      <div class="nav-header">Question Map</div>
+      <div id="nav-grid" class="nav-grid"></div>
+      <button id="btn-go-submit" class="btn btn-success btn-block">Submit Exam</button>
+    </aside>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════════ SCREEN: RESULTS ══ -->
+<div id="screen-results" class="screen">
+  <div class="results-card">
+    <div id="result-verdict" class="result-verdict"></div>
+    <h2 id="result-score" class="result-score"></h2>
+    <p id="result-sub" class="result-sub"></p>
+
+    <div id="topic-breakdown" class="topic-breakdown"></div>
+
+    <div class="results-actions">
+      <button id="btn-review" class="btn btn-outline">Review Answers</button>
+      <button id="btn-restart" class="btn btn-primary">Start Again</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ SCREEN: REVIEW ═══ -->
+<div id="screen-review" class="screen">
+  <header class="review-header">
+    <h2>Answer Review</h2>
+    <button id="btn-back-results" class="btn btn-ghost btn-sm">← Back to Results</button>
+  </header>
+  <div id="review-list" class="review-list"></div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

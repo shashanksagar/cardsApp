@@ -1,0 +1,28 @@
+<h2>What progress data should be saved per user?</h2>
+<p class="subtitle">Every completed session is stored in the Node server's JSON file. Choose what gets recorded.</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Session summary (Recommended baseline)</h3>
+      <p>Date, question set, mode, score %, pass/fail, time taken. Enough to show a history table: "Set 2 · Exam · 74% · Passed · 14 Jun".</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Topic breakdown per session</h3>
+      <p>Per-topic scores saved alongside each session (e.g. "Identity Management 80%, OAuth 60%"). Lets you show topic trends over time.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Full question-level answers</h3>
+      <p>Every question, what the user selected, and whether it was correct. Enables replaying any past session and seeing exactly which questions were missed.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:1rem">You can select multiple options — they stack on top of each other.</p>

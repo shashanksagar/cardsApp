@@ -1,0 +1,1506 @@
+{
+  "certification": "Salesforce Certified Integration Architect",
+  "set": "Set 1",
+  "questions": [
+    {
+      "id": 1,
+      "text": "Northern Trail Outfitters requires an integration between one of its Salesforce orgs and an External Data Source using Salesforce Connect. The External Data Source supports Open Data Protocol.\n\nWhich configuration should an integration architect recommend to secure requests coming from Salesforce?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Configure a certificate for OData connection."
+        },
+        {
+          "key": "B",
+          "text": "Configure Identity Type for OData connection."
+        },
+        {
+          "key": "C",
+          "text": "Configure Special Compatibility for OData connection."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Salesforce Connect"
+    },
+    {
+      "id": 2,
+      "text": "Northern Trail Outfitters (NTO) uses a custom mobile app with Salesforce Chatter Feeds. NTO wants to automatically post a Chatter item to Twitter whenever the post includes the #thanksNTO hashtag.\n\nWhich API should an integration architect use to meet this requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Streaming API to generate PushTopic"
+        },
+        {
+          "key": "B",
+          "text": "Connect REST API"
+        },
+        {
+          "key": "C",
+          "text": "REST API"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "API Selection"
+    },
+    {
+      "id": 3,
+      "text": "Northern Trail Outfitters has recently implemented middleware for orchestration of services across platforms. The ERP system requires transactions be captured near real time at a REST endpoint initiated in Salesforce when creating an Order object. The Salesforce team has limited development resources and requires a low-code solution.\n\nWhich option should fulfill the use case requirements?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Implement a Workflow Rule with Outbound Messaging to send SOAP messages to the designated endpoint."
+        },
+        {
+          "key": "B",
+          "text": "Use Remote Process Invocation Fire and Forget pattern on insert on the Order object using Flow Builder."
+        },
+        {
+          "key": "C",
+          "text": "Implement Change Data Capture on the Order object and leverage the replay ID in the middleware solution."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 4,
+      "text": "A subscription-based media company implemented an IAM system supporting SAML and OpenID to improve subscriber experience through self-registration and SSO. The IAM system must integrate with Salesforce to give new self-service customers instant access to Salesforce Community Cloud.\n\nWhich requirement should Salesforce Community Cloud support for self-registration and SSO?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "OpenID Connect Authentication Provider and Registration Handler"
+        },
+        {
+          "key": "B",
+          "text": "SAML SSO and Registration Handler"
+        },
+        {
+          "key": "C",
+          "text": "OpenID Connect Authentication Provider and Just-in-Time (JIT) provisioning"
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Identity and SSO"
+    },
+    {
+      "id": 5,
+      "text": "The URL for an external service has been changed without prior notice. The service provides up-to-date money exchange rates that are accessed several times from Salesforce and are a business-critical function for end users.\n\nWhich solutions should an integration architect recommend to minimize potential downtime for users in this situation?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Named Credentials and Content Security Policies"
+        },
+        {
+          "key": "B",
+          "text": "Remote Site Settings and Named Credentials"
+        },
+        {
+          "key": "C",
+          "text": "Enterprise Service Bus (ESB) and Remote Site Settings"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 6,
+      "text": "An integration architect has built a Salesforce application that integrates multiple systems and keeps them synchronized via Platform Events.\n\nWhat is taking place if events are only being published?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "The platform events are published immediately before the Apex transaction completes."
+        },
+        {
+          "key": "B",
+          "text": "The platform events are published after the Apex transaction completes."
+        },
+        {
+          "key": "C",
+          "text": "The platform events are being published from Apex."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Platform Events"
+    },
+    {
+      "id": 7,
+      "text": "Universal Containers (UC) is currently managing a custom monolithic web service responsible for Point-to-Point (P2P) integrations between Salesforce and a legacy billing application, Salesforce and a cloud-based ERP application, and Salesforce and a data lake. UC has found that the tight interdependencies between systems are causing integrations to fail.\n\nWhat should an integration architect recommend to decouple the systems and improve the performance of the integrations?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Move the custom monolithic web service from on-premise to a cloud provider."
+        },
+        {
+          "key": "B",
+          "text": "Leverage modular design by breaking up the web service into smaller pieces for a microservice architecture."
+        },
+        {
+          "key": "C",
+          "text": "Use the Salesforce Bulk API when integrating back into Salesforce."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 8,
+      "text": "Universal Containers (UC) will decommission its legacy CRM system and migrate data to Salesforce. The data migration team asked for a recommendation to optimize the performance of the data load to Salesforce.\n\nWhich approach should be used to meet the requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use Bulk API to process jobs in serial mode."
+        },
+        {
+          "key": "B",
+          "text": "Contact Salesforce Support to schedule performance load."
+        },
+        {
+          "key": "C",
+          "text": "Use Bulk API to process jobs in parallel mode."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Bulk API"
+    },
+    {
+      "id": 9,
+      "text": "A Salesforce customer is planning to roll out Salesforce for all of their sales and service staff. Senior management has requested that monitoring be in place for Operations to notify any degradation in Salesforce performance.\n\nHow should an integration consultant implement monitoring?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Identify critical business processes and establish automation to monitor performance against established benchmarks."
+        },
+        {
+          "key": "B",
+          "text": "Use APIEVENT to track all user initiated API calls through SOAP, REST, or Bulk APIs."
+        },
+        {
+          "key": "C",
+          "text": "Use Salesforce API Limits to capture current API usage and configure alerts for monitoring."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Monitoring"
+    },
+    {
+      "id": 10,
+      "text": "A large consumer goods manufacturer operating in multiple countries is planning to implement Salesforce globally. Requirements include: internal users authenticated via local active directory; customers use their own login or Google login; partners authenticated through a central system; and additional internal systems integrated with Salesforce.\n\nWhich requirement should the integration architect evaluate while designing the integration aspects of this project?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Evaluate the build of a custom authentication mechanism for each country and support for customers and partners."
+        },
+        {
+          "key": "B",
+          "text": "Evaluate Salesforce native authentication mechanism for all users including customers and partners."
+        },
+        {
+          "key": "C",
+          "text": "Consider a third-party single sign-on (SSO) solution supporting all user authentication including customer and partner."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Identity and SSO"
+    },
+    {
+      "id": 11,
+      "text": "Universal Containers (UC) works with third-party agents on banner design concepts stored in an on-premise file store. UC would like to allow third-party agencies to view the design files in the community. The conceptual design files size is 2.5 GB.\n\nWhich solution should an integration architect recommend?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use Salesforce Files to link the files to Salesforce records and display the record and the files in the community."
+        },
+        {
+          "key": "B",
+          "text": "Create a custom object to store the file location URL; when a community user clicks on the file URL, redirect the user to the on-premise system file location."
+        },
+        {
+          "key": "C",
+          "text": "Create a Lightning component with a Request and Reply integration pattern to allow community users to download the design files."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "File Integration"
+    },
+    {
+      "id": 12,
+      "text": "An integration architect has been tasked with integrating Salesforce with an on-premises system. Due to some established policies, this system must remain on-premises.\n\nWhat should the integration architect use to build a solution for this requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use Salesforce Connect if the database supports Open Database Connectivity (ODBC)."
+        },
+        {
+          "key": "B",
+          "text": "Use Heroku Connect if the data is hosted in Heroku."
+        },
+        {
+          "key": "C",
+          "text": "Use Salesforce Connect if the database supports Open Data Protocol (OData)."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Salesforce Connect"
+    },
+    {
+      "id": 13,
+      "text": "Which Web Services Description Language (WSDL) should an architect consider when creating an integration that might be used for more than one Salesforce org and different metadata?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Partner WSDL"
+        },
+        {
+          "key": "B",
+          "text": "SOAP API WSDL"
+        },
+        {
+          "key": "C",
+          "text": "Enterprise WSDL"
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "SOAP API"
+    },
+    {
+      "id": 14,
+      "text": "A customer is evaluating the Platform Events solution and comparing/contrasting it with Outbound Messaging for real-time needs. They expect 3,000 customers to view messages in Salesforce.\n\nWhat should be evaluated and highlighted when deciding between the solutions?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Both Platform Events and Outbound Messaging are highly scalable. However, unlike Outbound Messaging, only Platform Events have Event Delivery and Event publishing limits to be considered."
+        },
+        {
+          "key": "B",
+          "text": "In both Platform Events and Outbound Messaging, the event messages are retried and delivered in sequence and only once. Salesforce ensures there is no duplicate message delivery."
+        },
+        {
+          "key": "C",
+          "text": "Message sequence is possible in Outbound Messaging, but not guaranteed with Platform Events. Both offer very high reliability. Fault handling and recovery are fully handled by the middleware."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Platform Events"
+    },
+    {
+      "id": 15,
+      "text": "Northern Trail Outfitters (NTO) uses Salesforce to track leads, opportunities, and order details. However, orders are managed by an external (remote) system. Sales reps want to view and update real-time order information in Salesforce. NTO wants the data to only persist in the external system.\n\nWhich type of integration should an architect recommend to meet this business requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Data Synchronization"
+        },
+        {
+          "key": "B",
+          "text": "Data Virtualization"
+        },
+        {
+          "key": "C",
+          "text": "Process Orchestration"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 16,
+      "text": "A company needs to send data from Salesforce to a homegrown system behind a corporate firewall. The data needs to be pushed only one way and does not need to be sent in real time. The average volume is 2 million records per day.\n\nWhat should an integration architect consider when selecting the right option in building the integration?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Due to high volume of records, the external system will need to use a BULK API Rest endpoint to connect to Salesforce."
+        },
+        {
+          "key": "B",
+          "text": "Due to high volume of records, number of concurrent requests can hit the limit for the REST API call to the external system."
+        },
+        {
+          "key": "C",
+          "text": "Due to high volume of records, a third-party integration tool is required to stage records off platform."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 17,
+      "text": "Universal Containers (UC) is a global financial company. There is a daily scheduled Batch Apex job that generates invoices from a given set of orders. UC requested building a resilient integration for this Batch Apex job in case the invoice generation fails.\n\nWhat should an integration architect recommend to fulfill the requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Build Batch Retry and Error Handling in the Batch Apex job itself."
+        },
+        {
+          "key": "B",
+          "text": "Build Batch Retry and Error Handling using BatchApexErrorEvent."
+        },
+        {
+          "key": "C",
+          "text": "Build Batch Retry and Error Handling in the middleware."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Error Handling"
+    },
+    {
+      "id": 18,
+      "text": "Northern Trail Outfitters is creating a distributable Salesforce package for other Salesforce orgs within the company. The package needs to call into a custom Apex REST endpoint in the central org. The security team wants to ensure a specific integration account is used in the central org that they will authorize after installation of the package.\n\nWhich item should an architect recommend to secure the integration in the package?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use an encrypted field to store the password that the security team enters, and use password management for external orgs and set the encryption method to TLS 1.2."
+        },
+        {
+          "key": "B",
+          "text": "Contact Salesforce Support and create a case to temporarily enable API access for managed packages."
+        },
+        {
+          "key": "C",
+          "text": "Create an authentication provider in the package and set the consumer key and consumer secret of the connected app in the central org."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 19,
+      "text": "The director of customer service at Northern Trail Outfitters wants to capture and trend specific business events that occur in Salesforce in real time. The events include: a customer initiates a product exchange via a Case, a customer service rep clicks on the Authorize Exchange Product menu item, a customer initiates a subscription cancellation via a Case, and a customer service rep clicks on the Initiate Refund menu item.\n\nWhich solution should meet these business requirements?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Case Workflow Rule that sends an Outbound Message"
+        },
+        {
+          "key": "B",
+          "text": "Case after Insert Trigger that executes a callout"
+        },
+        {
+          "key": "C",
+          "text": "Case Trigger after Insert, after update to publish the platform event"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Platform Events"
+    },
+    {
+      "id": 20,
+      "text": "A global financial company's core banking system processes 1 million financial transactions per day. The CTO is considering building a community portal so that customers can view their bank account details, update their information, and review their account financial transactions.\n\nWhat should an integration architect recommend as a solution to enable financial community users to see their financial transactions?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Migrate the financial transaction records to a Salesforce custom object and use an ETL tool to keep ecosystems in sync."
+        },
+        {
+          "key": "B",
+          "text": "Use Salesforce Connect to display the financial transactions data as an external object."
+        },
+        {
+          "key": "C",
+          "text": "Use Change Data Capture to update downstream systems accordingly when a record changes."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Salesforce Connect"
+    },
+    {
+      "id": 21,
+      "text": "Universal Containers (UC) is a global financial company. There is a daily scheduled Batch Apex job that generates invoices from a given set of orders. UC requested building a resilient integration for this Batch Apex job in case the invoice generation fails.\n\nWhat should an integration architect recommend to fulfill the requirement? (Duplicate scenario - different exam paper)",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Build Batch Retry and Error Handling in the Batch Apex job itself."
+        },
+        {
+          "key": "B",
+          "text": "Build Batch Retry and Error Handling using BatchApexErrorEvent."
+        },
+        {
+          "key": "C",
+          "text": "Build Batch Retry and Error Handling in the middleware."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Error Handling"
+    },
+    {
+      "id": 22,
+      "text": "A company that is a leading provider of training has trainers that must be verified by 10 different training accreditation agencies before providing training. Each training accreditation agency has different processes, which means it can take days to confirm a trainer. The company decided to automate the trainer accreditation verification process by integrating it with the agency web services.\n\nWhat is the recommended approach to automate this process?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use middleware to handle the callout to the 10 different verification services; the middleware will handle the business logic of consolidating the verification results from the 10 services. Then, make a call-in to Salesforce to update the trainer status to verified."
+        },
+        {
+          "key": "B",
+          "text": "Use Salesforce External Service to make the callout to the verification agencies until the result is verified. Then, update the trainer status to verified."
+        },
+        {
+          "key": "C",
+          "text": "Make an Apex callout using @future annotation to make the callout to all different agencies; the response should update the trainer status to verified."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 23,
+      "text": "Universal Containers (UC) uses Salesforce to track Leads, Contacts, and Accounts as the system of record. Customer data also exists in an ERP system, ticketing system, and enterprise data lake, each with their own unique identifier. UC plans on using middleware to integrate Salesforce with the external systems and has a requirement to update the proper external system with record changes in Salesforce and vice versa.\n\nWhich solution should an integration architect recommend to handle this requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Design an MDM solution that maps external IDs to the Salesforce record ID."
+        },
+        {
+          "key": "B",
+          "text": "Locally cache external IDs at the middleware layer and design business logic to map updates between systems."
+        },
+        {
+          "key": "C",
+          "text": "Use Change Data Capture to update downstream systems accordingly when a record changes."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Data Management"
+    },
+    {
+      "id": 24,
+      "text": "Universal Containers (UC) is a leading provider of management training globally. UC requested a near real-time feed of student registration from Salesforce to the learning system. The integration architect recommends using Salesforce Platform Events.\n\nWhich API should be used for the Salesforce platform event solution?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Streaming API"
+        },
+        {
+          "key": "B",
+          "text": "REST API"
+        },
+        {
+          "key": "C",
+          "text": "SOAP API"
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Platform Events"
+    },
+    {
+      "id": 25,
+      "text": "Northern Trail Outfitters uses Salesforce to track leads and opportunities, and to capture order details. However, Salesforce is not the system that holds or processes orders. After the order details are captured in Salesforce, an order must be created in the remote system, which manages the order lifecycle. The integration architect is recommending a remote system that will subscribe to the platform event defined in Salesforce.\n\nWhich integration pattern should be used for this business use case?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Remote Call-In"
+        },
+        {
+          "key": "B",
+          "text": "Request and Reply"
+        },
+        {
+          "key": "C",
+          "text": "Fire and Forget"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 26,
+      "text": "A customer's enterprise architect has identified requirements around caching, queuing, error handling, alerts, event handling, etc. The company has asked the integration architect to help with such aspects with its Salesforce program.\n\nWhich recommendation should the integration architect make?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Message transformation and protocol translation should be done within Salesforce. Recommend Salesforce native capabilities as middleware tools are NOT suited for such tasks."
+        },
+        {
+          "key": "B",
+          "text": "Transform a Fire and Forget mechanism to Request and Reply, which should be handled by middleware tools (MuleSoft/ESB) to improve performance."
+        },
+        {
+          "key": "C",
+          "text": "Provide the middleware summary for integration scenarios (including orchestration, process choreography, quality of service, etc.) given that a middleware solution is required."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Middleware"
+    },
+    {
+      "id": 27,
+      "text": "Northern Trail Outfitters wants to use Salesforce as a front end for creating accounts using the lead-to-opportunity process. An order is created in Salesforce when the opportunity is Closed/Won, but the back-end ERP system is the data master for order. The customer wants to be able to see within Salesforce all the stages of order processing that are within the retention window.\n\nWhich message durability considerations should an integration architect make?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "When subscribing to Salesforce Event Bus, ReplayID is used with a value of -1 to be able to see new events."
+        },
+        {
+          "key": "B",
+          "text": "High-volume event messages are stored for 24 hours (1 day)."
+        },
+        {
+          "key": "C",
+          "text": "When subscribing to Salesforce Event Bus, ReplayID is used with a value of -2 to be able to see old and new events."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Platform Events"
+    },
+    {
+      "id": 28,
+      "text": "A customer is migrating from an old legacy system to Salesforce. As part of the modernization effort, the customer would like to integrate all existing systems that currently work with its legacy application with Salesforce.\n\nWhich constraint/pain-point should an integration architect consider when choosing the integration pattern/mechanism?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Reporting and usability requirements"
+        },
+        {
+          "key": "B",
+          "text": "Multi-language and multi-currency requirement"
+        },
+        {
+          "key": "C",
+          "text": "System types APIs, File systems, Email"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 29,
+      "text": "Universal Containers (UC) currently owns a middleware tool and has developed an API-led integration architecture with three API tiers. The first tier interfaces directly with the systems of engagement, the second tier implements business logic and aggregates data, and the third tier interfaces directly with the systems of record. UC has a business requirement to return data to the systems of engagement in different formats while also enforcing different security protocols.\n\nWhat should an integration architect recommend to meet these requirements?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Implement an API Gateway that all systems of engagement must interface with first."
+        },
+        {
+          "key": "B",
+          "text": "Enforce separate security protocols and return formats at the first tier of the API-led architecture."
+        },
+        {
+          "key": "C",
+          "text": "Leverage an Identity Provider solution that communicates with the API tiers via SAML."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "API Architecture"
+    },
+    {
+      "id": 30,
+      "text": "An architect decided to use Platform Events for integrating Salesforce with an external system for a company.\n\nWhat should an architect consider when proposing this type of integration mechanism?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "To publish an event, the integration user in Salesforce needs to create permissions on the event entity."
+        },
+        {
+          "key": "B",
+          "text": "External system needs to have the same uptime in order to be able to keep up with Salesforce Platform Events."
+        },
+        {
+          "key": "C",
+          "text": "Salesforce needs to be able to store information about the external system in order to know which event to send out."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Platform Events"
+    },
+    {
+      "id": 31,
+      "text": "A large B2C customer is planning to implement Salesforce CRM. The current system landscape includes Social Listening and Support Platform, Email Marketing System, Sales Activity System, Quoting System, and Customer Database. The goals include developing a 360-degree view of the customer, leveraging Salesforce capabilities for marketing, sales, and service processes, and reusing enterprise capabilities built for quoting and order management processes.\n\nWhich three systems from the current system landscape can be retired with the implementation of Salesforce?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Email Marketing, Sales Activity, and Case Management"
+        },
+        {
+          "key": "B",
+          "text": "Order Management, Case Management, and Email Marketing"
+        },
+        {
+          "key": "C",
+          "text": "Sales Activity, Order Management, and Case Management"
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "System Landscape"
+    },
+    {
+      "id": 32,
+      "text": "A customer imports data from an external system into Salesforce using Bulk API. These jobs have batch sizes of 2,000 and are run in parallel mode. The batches fail frequently with the error 'Max CPU time exceeded'. A smaller batch size will fix this error.\n\nWhat should be considered when using a smaller batch size?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Smaller batch size may exceed the concurrent API request limits."
+        },
+        {
+          "key": "B",
+          "text": "Smaller batch size may increase time required to execute bulk jobs."
+        },
+        {
+          "key": "C",
+          "text": "Smaller batch size can trigger 'Too many concurrent batches' error."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Bulk API"
+    },
+    {
+      "id": 33,
+      "text": "Universal Containers (UC) sales representatives use Sales Cloud as their primary CRM. UC owns a legacy homegrown application that also stores a copy of customer data. Sales representatives may edit or update contact records in either place. Both Salesforce and the homegrown application should be kept synchronized for consistency.\n\nTechnical requirements: when a contact record in Salesforce is updated, the external homegrown application should also be updated; the synchronization should be event-driven; the integration should be asynchronous.\n\nWhich option should an architect recommend to satisfy the requirements?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Leverage Platform Events to publish a custom event message containing changes to the Contact object."
+        },
+        {
+          "key": "B",
+          "text": "Use an ETL tool to keep Salesforce and the homegrown application in sync on a regular cadence."
+        },
+        {
+          "key": "C",
+          "text": "Leverage Change Data Capture to track changes to the Contact object and write a CometD subscriber on the homegrown application."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Change Data Capture"
+    },
+    {
+      "id": 34,
+      "text": "An integration architect has received a request to prevent employees that leave the company from accessing data in Salesforce after they are deactivated in the company HR system.\n\nWhat should the integration architect determine before recommending a solution?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Data access prevention requirements, integration requirements, and system constraints"
+        },
+        {
+          "key": "B",
+          "text": "Data access prevention requirements, then identify frequency"
+        },
+        {
+          "key": "C",
+          "text": "Inbound integration requirements, then identify frequency"
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 35,
+      "text": "Northern Trail Outfitters (NTO) has a requirement to encrypt a few widely-used standard fields. NTO also wants to be able to use these fields in record-triggered flows.\n\nWhich security solution should an integration architect recommend to fulfill the business use case?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Classic Encryption"
+        },
+        {
+          "key": "B",
+          "text": "Shield Platform Encryption"
+        },
+        {
+          "key": "C",
+          "text": "Data Masking"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 36,
+      "text": "Historical records are archived from Salesforce and moved to a Historical Data store housing 20 million records and growing. Call center agents use Salesforce and have requested access to view the historical data on Case items.\n\nWhich mechanism and patterns are recommended to maximize declarative configuration?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use an ESB tool with a Data Virtualization pattern, expose the OData endpoint, and then use Salesforce Connect to map and display the external object data into the Case object."
+        },
+        {
+          "key": "B",
+          "text": "Use an ESB tool with a Request and Reply pattern, and then make a real-time Apex callout to the ESB endpoint to fetch and display historical data in a custom Lightning component related to the Case object."
+        },
+        {
+          "key": "C",
+          "text": "Use an ESB tool with a Fire and Forget pattern, and then publish a platform event for the requested historical data."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Data Virtualization"
+    },
+    {
+      "id": 37,
+      "text": "An integration architect has designed a mobile application for Salesforce users to get data while on the road using a custom UI. The application is secured with OAuth. There is a new requirement where the mobile application needs to obtain the GPS coordinates and store them on a custom geolocation field. The geolocation field is secured with field-level security, so users can view the value without changing it.\n\nWhat should be done to meet the requirement?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "The mobile device makes a REST API inbound call."
+        },
+        {
+          "key": "B",
+          "text": "The mobile device receives a REST Apex callout call."
+        },
+        {
+          "key": "C",
+          "text": "The mobile device makes a REST Apex inbound call."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Mobile Integration"
+    },
+    {
+      "id": 38,
+      "text": "An enterprise customer is planning to implement Salesforce to support case management. The current system landscape includes Order Management System, Data Warehouse, Email Management System, and Case Management System.\n\nWhat should the integration architect evaluate when integrating Salesforce with the current system landscape?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Integrate Salesforce with Order Management System, Data Warehouse, and Case Management System."
+        },
+        {
+          "key": "B",
+          "text": "Integrate Salesforce with Email Management System, Order Management System, and Case Management System."
+        },
+        {
+          "key": "C",
+          "text": "Integrate Salesforce with Data Warehouse, Order Management, and Email Management System."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "System Landscape"
+    },
+    {
+      "id": 39,
+      "text": "Northern Trail Outfitters (NTO) uses different shipping services for each of the 34 countries it serves. Services are added and removed frequently to optimize shipping times and costs. Sales representatives need to select between valid service(s) for the customer's country and request shipping estimates from that service.\n\nWhich solution should an architect propose?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use Platform Events to construct and publish shipper-specific events."
+        },
+        {
+          "key": "B",
+          "text": "Invoke middleware services to retrieve valid shipping methods."
+        },
+        {
+          "key": "C",
+          "text": "Store shipping services in a picklist that is dependent on a country picklist."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 40,
+      "text": "A company accepts payment requests 24/7. Once the company accepts a payment request, its SLA requires it to make sure each payment request is processed by its Payment System. The company tracks payment requests using a globally unique identifier. They encounter intermittent update errors when two or more processes try to update the same Payment Request record at the same time.\n\nWhich recommendation should an integration architect make to improve the company SLA and update conflict handling?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Payment System should process a payment request only once."
+        },
+        {
+          "key": "B",
+          "text": "Middleware should coordinate request delivery and payment processing."
+        },
+        {
+          "key": "C",
+          "text": "Payment System and Middleware should automatically retry requests."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 41,
+      "text": "What is the first thing an integration architect should validate if a callout from a Lightning web component to an external endpoint is failing?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "The endpoint/domain has been added to Cross-Origin Resource Sharing."
+        },
+        {
+          "key": "B",
+          "text": "The endpoint URL has been added to Content Security Policies."
+        },
+        {
+          "key": "C",
+          "text": "The endpoint URL has been added to Remote Site Settings."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 42,
+      "text": "An integration architect has built a solution using REST API, updating Account, Contact, and other related information. The data volumes have increased, resulting in higher API calls consumed, and some days the limits are exceeded. A decision was made to decrease the number of API calls using bulk updates. The customer prefers to continue using REST API to avoid architecture changes.\n\nWhich REST API composite resources should the integration architect use to allow up to 200 records in one API call?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "SObject Tree"
+        },
+        {
+          "key": "B",
+          "text": "Composite"
+        },
+        {
+          "key": "C",
+          "text": "Batch"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "REST API"
+    },
+    {
+      "id": 43,
+      "text": "Northern Trail Outfitters (NTO) has had an increase in requests from other business units to integrate opportunity information with other systems from Salesforce. The developers have started writing asynchronous @future callouts directly into the target systems. The CIO is concerned about the viability of this approach and has requested a solution recommendation.\n\nWhat should be done to mitigate the CIO's concerns?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Implement an ETL tool and perform nightly batch data loads using custom datasets. Reduce network traffic using last updated times on the Opportunity object to export the right records."
+        },
+        {
+          "key": "B",
+          "text": "Refactor the existing @future methods to use Enhanced External Services or report Open API 2.0 schemas, and update flows to use services instead of Apex."
+        },
+        {
+          "key": "C",
+          "text": "Implement an Enterprise Service Bus for service orchestration, mediation, routing, and decouple dependencies across systems."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 44,
+      "text": "Northern Trail Outfitters (NTO) recently changed to Corporate Security Guidelines. The guidelines require that all cloud applications pass through a secure firewall before accessing on-premise resources and services. NTO is evaluating middleware solutions.\n\nWhich consideration should an integration architect evaluate before choosing a middleware solution?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "The middleware solution is able to interface directly with databases via an Open Database Connectivity (ODBC) connection string."
+        },
+        {
+          "key": "B",
+          "text": "An API Gateway environment is deployed behind a Demilitarized Zone (DMZ) or perimeter network."
+        },
+        {
+          "key": "C",
+          "text": "The middleware solution supports the OAuth security protocol."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 45,
+      "text": "An enterprise architect has requested the Salesforce Integration architect to review an integration scenario. Eligibility systems can be accessed through APIs orchestrated via ESB (MuleSoft). All requests from Salesforce will have to traverse through the customer API Gateway layer, and the API Gateway imposes a constraint of timing out requests after 9 seconds.\n\nWhich recommendation should the integration architect make?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Recommend synchronous Apex callouts from Lightning UI to External Systems via Mule and implement polling on an API Gateway timeout."
+        },
+        {
+          "key": "B",
+          "text": "Create a platform event in Salesforce via Remote Call-In and use the empAPI in the Lightning UI to serve 3,000 concurrent users when responses are received by Mule."
+        },
+        {
+          "key": "C",
+          "text": "Implement a Check Update button that passes a requestID received from ESB (user action needed)."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 46,
+      "text": "A developer has been tasked by the integration architect to build a solution based on the Streaming API. The developer has found there are different implementations of the events in Salesforce (PushTopic Events, Change Data Capture, Generic Streaming, Platform Events), but is unsure of how to proceed.\n\nWhat should the architect consider when making the recommendation?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "PushTopic Events can define a custom payload."
+        },
+        {
+          "key": "B",
+          "text": "Change Data Capture does not have record access support."
+        },
+        {
+          "key": "C",
+          "text": "Change Data Capture can be published from Apex."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Streaming API"
+    },
+    {
+      "id": 47,
+      "text": "Northern Trail Outfitters is in the final stages of merging two Salesforce orgs, but needs to keep the retiring org available for a short period of time for lead management. The sales department has requested that new leads are available in the new Salesforce instance within 30 minutes.\n\nWhich approach requires the least amount of development effort?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use the Tooling API with Process Builder to insert leads in real time."
+        },
+        {
+          "key": "B",
+          "text": "Use the Composite REST API to aggregate multiple leads in a single call."
+        },
+        {
+          "key": "C",
+          "text": "Call the Salesforce REST API to insert the lead into the target system."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "REST API"
+    },
+    {
+      "id": 48,
+      "text": "A new Salesforce program has the following high-level abstract requirement: Business processes executed on Salesforce require data updates between their internal systems and Salesforce.\n\nWhich relevant detail should an integration architect seek to specifically solve for integration architecture needs of the program?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Core functional and non-functional requirements for User Experience design, Encryption needs, Community, and license choices"
+        },
+        {
+          "key": "B",
+          "text": "Integration skills, SME availability, and Program Governance details"
+        },
+        {
+          "key": "C",
+          "text": "Timing aspects, real-time/near real-time (synchronous or asynchronous), batch and update frequency"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 49,
+      "text": "Northern Trail Outfitters (NTO) is planning to create a native employee-facing mobile app with the look and feel of Salesforce Lightning Experience. The mobile app needs to integrate with NTO's Salesforce org.\n\nWhich Salesforce API should be used to implement this integration?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "REST API"
+        },
+        {
+          "key": "B",
+          "text": "User Interface API"
+        },
+        {
+          "key": "C",
+          "text": "Connect REST API"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "API Selection"
+    },
+    {
+      "id": 50,
+      "text": "An integration architect needs to build a solution that will use the Streaming API, but the data loss should be minimized, even when the client reconnects every couple of days.\n\nWhich two types of Streaming API events should be considered? (Choose 2)",
+      "type": "multi",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Change Data Capture"
+        },
+        {
+          "key": "B",
+          "text": "High Volume Platform Events"
+        },
+        {
+          "key": "C",
+          "text": "Generic Events"
+        },
+        {
+          "key": "D",
+          "text": "PushTopic Events"
+        }
+      ],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "topic": "Streaming API"
+    },
+    {
+      "id": 51,
+      "text": "A company's security assessment noted vulnerabilities on the unmanaged packages in its Salesforce orgs; notably, secrets that are easily accessible and in plain text, such as usernames, passwords, and OAuth tokens used in callouts from Salesforce.\n\nWhich persistence mechanisms should an integration architect require to be used to ensure that secrets are protected from deliberate or inadvertent exposure?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Protected Custom Metadata Types and Named Credentials"
+        },
+        {
+          "key": "B",
+          "text": "Encrypted Custom Fields and Protected Custom Settings"
+        },
+        {
+          "key": "C",
+          "text": "Named Credentials and Protected Custom Settings"
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 52,
+      "text": "Northern Trail Outfitters needs to make synchronous callouts to 'available-to-promise' services to query product availability and reserve inventory during the customer checkout process.\n\nWhat should an integration architect consider when building a scalable integration solution?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "The maximum query cursors open per user on the service"
+        },
+        {
+          "key": "B",
+          "text": "The typical and worst-case historical response times"
+        },
+        {
+          "key": "C",
+          "text": "The number of batch jobs that can run concurrently"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 53,
+      "text": "Northern Trail Outfitters (NTO) wants to improve the quality of callouts from Salesforce to its REST APIs. NTO will require all API clients/consumers to adhere to RAML specifications. The RAML specs serve as interface contracts that Apex REST API Clients can rely on.\n\nWhich design specification should the integration architect include to ensure that Apex REST API Clients unit tests conform and adhere to the RAML specs?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Require the Apex REST API Clients to implement the HttpCalloutMock."
+        },
+        {
+          "key": "B",
+          "text": "Call the Apex REST API Clients unit tests in a test context to get the mock response."
+        },
+        {
+          "key": "C",
+          "text": "Call the HttpCalloutMock implementation from the Apex REST API Clients."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "API Testing"
+    },
+    {
+      "id": 54,
+      "text": "A company that is a leading provider of training has trainers that must be verified by 10 different training accreditation agencies before providing training. Each training accreditation agency has its own platform verification, which means it can take days to confirm a trainer. The company decided to automate the trainer accreditation verification process by integrating it with the agency web services.\n\nWhat is the recommended approach to automate this process?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use middleware to handle the callout to the 10 different verification services; the middleware will handle the business logic of consolidating the verification results from the 10 services. Then, make a call-in to Salesforce to update the trainer status to verified."
+        },
+        {
+          "key": "B",
+          "text": "Use Salesforce External Service to make the callout to the verification agencies until the result is verified. Then, update the trainer status to verified."
+        },
+        {
+          "key": "C",
+          "text": "Make an Apex callout using @future annotation to make the callout to all different agencies; the response should update the trainer status to verified."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 55,
+      "text": "Northern Trail Outfitters needs to use Shield Platform Encryption to encrypt social security numbers in order to meet a business requirement.\n\nWhich action should an integration architect take prior to the implementation of Shield Platform Encryption?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Review Shield Platform Encryption configurations."
+        },
+        {
+          "key": "B",
+          "text": "Use Shield Platform Encryption as a user authentication or authorization tool."
+        },
+        {
+          "key": "C",
+          "text": "Encrypt all the data so that it is secure."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 56,
+      "text": "A company has an external system that processes and tracks orders. The company decided to integrate Salesforce and the Order Management System with these requirements: orders need to be created in real time; minimal customizations and code due to a tight timeline; sales reps need to see order history and current order status; managers need to run reports in Salesforce; the legacy system is hosted on-premise connected to an ESB; and there are 1,000 sales reps each processing 15 orders per shift with 20-30 line items.\n\nHow should an integration architect integrate the two systems?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use Salesforce custom object, custom REST API, and extract, transform, and load (ETL)."
+        },
+        {
+          "key": "B",
+          "text": "Use Salesforce standard object, REST API, and extract, transform, and load (ETL)."
+        },
+        {
+          "key": "C",
+          "text": "Use Salesforce external object and OData connector."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Integration Architecture"
+    },
+    {
+      "id": 57,
+      "text": "When a user clicks 'Check Preferences' as part of a Lightning flow in Salesforce, preferences from an externally hosted RESTful service are to be checked in real time. The RESTful service has OpenAPI 2.0 JSON definitions, responding in Boolean and string values data types.\n\nWhich integration pattern and mechanism should be selected to meet the conditions?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Data Virtualization: Salesforce Connect maps external REST data in external objects."
+        },
+        {
+          "key": "B",
+          "text": "Remote Call-In: Salesforce REST API with REST Composite Resources."
+        },
+        {
+          "key": "C",
+          "text": "Request and Reply: Enhanced External Services invokes a REST API."
+        }
+      ],
+      "answer": [
+        "C"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 58,
+      "text": "A large enterprise customer has decided to implement Salesforce as its CRM. The current system landscape includes an ERP solution responsible for Customer Invoicing and order fulfillment, and a Marketing solution used for email campaigns. The enterprise customer needs its sales and service associates to use Salesforce to view and log their interactions with customers and prospects.\n\nWhich system should be the system of record for the enterprise customer's customers and prospects?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "New Custom Database for customers and prospects"
+        },
+        {
+          "key": "B",
+          "text": "Salesforce with relevant Marketing and ERP Information"
+        },
+        {
+          "key": "C",
+          "text": "ERP with all prospect data from Marketing and Salesforce"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Data Management"
+    },
+    {
+      "id": 59,
+      "text": "A B2C enterprise customer has a use case that involves processing payment from an external payment gateway. A CSR submits payment information in Salesforce, and it is processed in an external payment gateway. The CSR must receive confirmation of payment before upgrading service. The integration needs to be reliable and monitored for audit purposes. The payment gateway service is an external RESTful service.\n\nWhat should an integration architect recommend for this integration?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Use External Services feature to integrate payment gateway to Salesforce to ensure real-time updates to the CSR and support post payment processes."
+        },
+        {
+          "key": "B",
+          "text": "Build a custom Apex callout to external payment gateway service and provide a success message to the CSR; the details of callouts and responses are logged for audit purposes."
+        },
+        {
+          "key": "C",
+          "text": "Make a callout to the payment gateway through ESB supporting error handling and logging for audit purposes."
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Integration Patterns"
+    },
+    {
+      "id": 60,
+      "text": "Northern Trail Outfitters needs to present shipping costs and estimated delivery times to its customers. Shipping services used vary by region and have similar but distinct service request parameters.\n\nWhich integration component capability should be used?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Apex REST Service to implement routing logic to the various shipping service"
+        },
+        {
+          "key": "B",
+          "text": "Enterprise Service Bus to determine which shipping service to use and transform requests to the necessary format"
+        },
+        {
+          "key": "C",
+          "text": "Enterprise Service Bus user interface to collect shipper-specific form data"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Middleware"
+    },
+    {
+      "id": 61,
+      "text": "Northern Trail Outfitters is seeking to improve the performance and security of outbound integrations from Salesforce to on-premise servers.\n\nWhat should the integration architect consider before recommending a solution?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "External gateway products in use"
+        },
+        {
+          "key": "B",
+          "text": "Shield Platform Encryption limitations"
+        },
+        {
+          "key": "C",
+          "text": "Default gateway restrictions"
+        }
+      ],
+      "answer": [
+        "A"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 62,
+      "text": "Northern Trail Outfitters is planning to perform nightly batch loads into Salesforce from an external Java application using the Bulk API. The CIO is curious about monitoring recommendations for the jobs from the technical architect.\n\nWhich recommendation should help meet the requirements?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Write the error results from the Bulk API status to a custom error logging object in Salesforce using an Apex trigger, and create reports on the object."
+        },
+        {
+          "key": "B",
+          "text": "Use the getBatchInfo method called in the Java application to monitor the status of the jobs from the Java application."
+        },
+        {
+          "key": "C",
+          "text": "Set the Salesforce debug logs level to 'Finest', and add the user ID running the jobs to monitor in the 'Debug Logs' in the setup."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Monitoring"
+    },
+    {
+      "id": 63,
+      "text": "What should an integration architect recommend to ensure all integrations to the Northern Trail Outfitters company portal use SSL mutual authentication?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Generate a certification authority (CA) signed certificate."
+        },
+        {
+          "key": "B",
+          "text": "Enforce SSL/TLS Mutual Authentication."
+        },
+        {
+          "key": "C",
+          "text": "Enable My Domain and SSL/TLS."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Security"
+    },
+    {
+      "id": 64,
+      "text": "A company's cloud-based single-page application consolidates data from on-premise and third-party systems. The company wants to use the average response time of its application user interface as a basis for certain alerts. Every call start and finish date and time is logged to a central analytics data store.\n\nWhich computation represents the end-to-end response time from the user's perspective?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Sum of A to M"
+        },
+        {
+          "key": "B",
+          "text": "Sum of A and M"
+        },
+        {
+          "key": "C",
+          "text": "Sum of A to F"
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Monitoring"
+    },
+    {
+      "id": 65,
+      "text": "Northern Trail Outfitters needs to secure an integration with an external Microsoft Azure API Gateway.\n\nWhich integration security mechanism should be employed?",
+      "type": "single",
+      "choices": [
+        {
+          "key": "A",
+          "text": "Configure a connected app with an authorization endpoint of the API Gateway and configure OAuth settings."
+        },
+        {
+          "key": "B",
+          "text": "Configure mutual server authentication with two-way SSL using certification authority (CA) signed certificates."
+        },
+        {
+          "key": "C",
+          "text": "Use an API-only user profile and implement an external identity provider with federated API access."
+        }
+      ],
+      "answer": [
+        "B"
+      ],
+      "topic": "Security"
+    }
+  ]
+}

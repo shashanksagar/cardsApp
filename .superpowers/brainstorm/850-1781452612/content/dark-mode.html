@@ -1,0 +1,40 @@
+<h2>How should dark mode work?</h2>
+<p class="subtitle">Choose how users toggle between light and dark themes.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Toggle button in the UI (Recommended)</h3>
+      <p>A 🌙/☀️ button visible on every screen (top-right corner). User preference saved to localStorage so it persists across sessions. Works regardless of OS setting.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Every screen — top right</div>
+        <div class="mockup-body" style="display:flex;justify-content:flex-end">
+          <button class="mock-button" style="font-size:1.1rem;padding:0.3rem 0.6rem">🌙</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Follow OS system preference automatically</h3>
+      <p>Uses <code>prefers-color-scheme</code> media query. No toggle needed — app matches whatever the user's OS is set to. No user action required.</p>
+      <div class="pros-cons" style="margin-top:0.5rem;font-size:0.83rem">
+        <div class="pros"><h4>Pros</h4><ul><li>Zero UI clutter</li><li>Feels native</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Can't override without changing OS</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Both — OS default + manual override</h3>
+      <p>App respects OS preference by default. A toggle button lets users override it per-session. Preference saved to localStorage. Most flexible but slightly more complex.</p>
+      <div class="pros-cons" style="margin-top:0.5rem;font-size:0.83rem">
+        <div class="pros"><h4>Pros</h4><ul><li>Best of both worlds</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Slightly more logic</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

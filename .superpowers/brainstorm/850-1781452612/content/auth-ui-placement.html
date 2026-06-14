@@ -1,0 +1,59 @@
+<h2>Where should the Login / Register UI live?</h2>
+<p class="subtitle">How does a user get to the login screen before starting their exam?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>New screen before Start (Recommended)</h3>
+      <p>A dedicated Login/Register screen appears first when the app loads. After signing in, the existing Start screen appears as normal. Clean separation.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Flow</div>
+        <div class="mockup-body" style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;flex-wrap:wrap">
+          <span style="background:#0176d3;color:#fff;padding:0.3rem 0.7rem;border-radius:4px">Login/Register</span>
+          <span>→</span>
+          <span style="background:#eee;padding:0.3rem 0.7rem;border-radius:4px">Start Screen</span>
+          <span>→</span>
+          <span style="background:#eee;padding:0.3rem 0.7rem;border-radius:4px">Exam</span>
+          <span>→</span>
+          <span style="background:#eee;padding:0.3rem 0.7rem;border-radius:4px">Results</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Modal overlay on the Start screen</h3>
+      <p>The Start screen is always visible. A login modal pops up automatically if no user is logged in. After login it dismisses and the Start screen is usable.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Flow</div>
+        <div class="mockup-body" style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;flex-wrap:wrap">
+          <span style="background:#eee;padding:0.3rem 0.7rem;border-radius:4px">Start Screen</span>
+          <span>+</span>
+          <span style="background:#0176d3;color:#fff;padding:0.3rem 0.7rem;border-radius:4px">Login Modal</span>
+          <span>→</span>
+          <span style="background:#eee;padding:0.3rem 0.7rem;border-radius:4px">Exam</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Inline on the Start card (login fields embedded)</h3>
+      <p>The login/register form is built directly into the Start card. When logged in, the form is replaced by a "Welcome, Name" section with a logout button.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Start Card</div>
+        <div class="mockup-body" style="font-size:0.85rem">
+          <div style="border:1px solid #ddd;border-radius:6px;padding:0.5rem;background:#f9f9f9">
+            ☁️ Salesforce IAM Architect<br/>
+            <input class="mock-input" placeholder="Username" style="margin-top:0.4rem;width:100%"/>
+            <input class="mock-input" placeholder="Password" style="margin-top:0.3rem;width:100%"/>
+            <button class="mock-button" style="margin-top:0.3rem;width:100%">Login / Register</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
