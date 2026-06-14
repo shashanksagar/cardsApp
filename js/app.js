@@ -118,6 +118,20 @@ if (!auth.token) {
   showModal();
 }
 
+// ─── Progress ─────────────────────────────────────────────────────
+async function saveProgress(sessionData) {
+  if (!auth.token) return;
+  try {
+    await fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: auth.token, ...sessionData }),
+    });
+  } catch (e) {
+    console.warn('Could not save progress:', e);
+  }
+}
+
 // ─── State ────────────────────────────────────────────────────────
 const state = {
   questions:    [],       // loaded + shuffled
@@ -139,6 +153,7 @@ const screens = {
   exam:    $('screen-exam'),
   results: $('screen-results'),
   review:  $('screen-review'),
+  history: $('screen-history'),
 };
 
 // ─── Screen helper ────────────────────────────────────────────────
@@ -550,6 +565,28 @@ function showResults() {
       </div>`;
   });
 
+  // Build answers array for history
+  const answersForHistory = state.questions.map((q, i) => {
+    const ans = state.answers[i];
+    return {
+      qIdx: i,
+      text: q.text,
+      selected: ans ? ans.selected : [],
+      correct:  ans ? ans.correct  : false,
+    };
+  });
+
+  saveProgress({
+    set:            $('header-set-label').textContent,
+    mode:           state.mode,
+    score:          correct,
+    total:          total,
+    passed:         passed,
+    timeTaken:      state.mode === 'exam' ? (92 * 60 - state.secondsLeft) : 0,
+    topicBreakdown: topicMap,
+    answers:        answersForHistory,
+  });
+
   showScreen('results');
 }
 
@@ -608,3 +645,84 @@ $('btn-restart').addEventListener('click', () => {
   clearInterval(state.timer);
   showScreen('start');
 });
+
+// ─── History screen ───────────────────────────────────────────────
+$('btn-history').addEventListener('click', async () => {
+  await buildHistory();
+  showScreen('history');
+});
+
+$('btn-back-from-history').addEventListener('click', () => showScreen('results'));
+
+async function buildHistory() {
+  const container = $('history-content');
+  container.innerHTML = '<p style="color:var(--sf-gray)">Loading…</p>';
+
+  try {
+    const resp = await fetch(`/api/progress?token=${auth.token}`);
+    const data = await resp.json();
+    const sessions = (data.sessions || []).slice().reverse(); // newest first
+
+    if (sessions.length === 0) {
+      container.innerHTML = '<p style="color:var(--sf-gray);padding:1rem 0">No sessions recorded yet.</p>';
+      return;
+    }
+
+    let html = `<table class="history-table">
+      <thead><tr>
+        <th>#</th><th>Date</th><th>Set</th><th>Mode</th><th>Score</th><th>Result</th>
+      </tr></thead><tbody>`;
+
+    sessions.forEach((s, i) => {
+      const d    = new Date(s.date);
+      const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      const pct  = Math.round((s.score / s.total) * 100);
+      const pass = s.passed
+        ? '<span class="badge-pass">✅ Pass</span>'
+        : '<span class="badge-fail">❌ Fail</span>';
+      html += `<tr onclick="toggleHistoryRow(this, ${i})" data-idx="${i}">
+        <td>${sessions.length - i}</td>
+        <td>${dateStr}</td>
+        <td>${s.set}</td>
+        <td style="text-transform:capitalize">${s.mode}</td>
+        <td>${s.score}/${s.total} (${pct}%)</td>
+        <td>${pass}</td>
+      </tr>
+      <tr id="history-expand-${i}" style="display:none">
+        <td colspan="6">
+          <div class="history-expand">
+            <strong style="font-size:0.8rem">Topic Breakdown</strong>
+            ${buildTopicBreakdownHtml(s.topicBreakdown)}
+          </div>
+        </td>
+      </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = '<p style="color:var(--sf-red)">Could not load history. Is the server running?</p>';
+  }
+}
+
+function buildTopicBreakdownHtml(topicBreakdown) {
+  if (!topicBreakdown || Object.keys(topicBreakdown).length === 0) return '<p>No topic data.</p>';
+  return Object.entries(topicBreakdown)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([topic, data]) => {
+      const p = Math.round((data.correct / data.total) * 100);
+      const color = p >= 68 ? 'var(--sf-green)' : p >= 50 ? 'var(--sf-orange)' : 'var(--sf-red)';
+      return `<div class="history-topic-row">
+        <span style="flex:1;font-size:0.82rem">${topic}</span>
+        <div style="width:120px;height:7px;background:#ddd;border-radius:999px;overflow:hidden">
+          <div style="width:${p}%;height:100%;background:${color};border-radius:999px"></div>
+        </div>
+        <span style="min-width:3rem;text-align:right;font-weight:700;color:${color};font-size:0.82rem">${p}%</span>
+      </div>`;
+    }).join('');
+}
+
+function toggleHistoryRow(tr, idx) {
+  const expand = document.getElementById(`history-expand-${idx}`);
+  expand.style.display = expand.style.display === 'none' ? '' : 'none';
+}
