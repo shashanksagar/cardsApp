@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  (function() {
+    if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-init');
+  })();
+</script>
+<style>
+  html.dark-init body { background: #0f1b2d !important; }
+</style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Salesforce Cert Exam Prep</title>
@@ -10,6 +18,10 @@
 
 <!-- ═══════════════════════════════════════════════ SCREEN: START ══ -->
 <div id="screen-start" class="screen active">
+  <div style="position:fixed;top:0.75rem;right:1rem;display:flex;align-items:center;gap:0.75rem;z-index:50">
+    <div id="user-chip-start" class="user-chip hidden"></div>
+    <button class="dark-toggle" id="dark-toggle-start" title="Toggle dark mode">🌙</button>
+  </div>
   <div class="card start-card">
     <div class="logo">☁️</div>
     <h1>Salesforce Cert Exam Prep</h1>
@@ -71,7 +83,9 @@
       </div>
     </div>
     <div class="header-right">
+      <div id="user-chip-exam" class="user-chip hidden"></div>
       <span id="timer-display" class="timer hidden">1:32:00</span>
+      <button class="dark-toggle" id="dark-toggle-exam" title="Toggle dark mode">🌙</button>
       <button id="btn-quit" class="btn btn-ghost btn-sm">✕ Quit</button>
     </div>
   </header>
@@ -112,6 +126,10 @@
 
 <!-- ══════════════════════════════════════════════ SCREEN: RESULTS ══ -->
 <div id="screen-results" class="screen">
+  <div style="position:fixed;top:0.75rem;right:1rem;display:flex;align-items:center;gap:0.75rem;z-index:50">
+    <div id="user-chip-results" class="user-chip hidden"></div>
+    <button class="dark-toggle" id="dark-toggle-results" title="Toggle dark mode">🌙</button>
+  </div>
   <div class="results-card">
     <div id="result-verdict" class="result-verdict"></div>
     <h2 id="result-score" class="result-score"></h2>
@@ -120,6 +138,7 @@
     <div id="topic-breakdown" class="topic-breakdown"></div>
 
     <div class="results-actions">
+      <button id="btn-history" class="btn btn-outline">📋 My History</button>
       <button id="btn-review" class="btn btn-outline">Review Answers</button>
       <button id="btn-restart" class="btn btn-primary">Start Again</button>
     </div>
@@ -130,9 +149,52 @@
 <div id="screen-review" class="screen">
   <header class="review-header">
     <h2>Answer Review</h2>
-    <button id="btn-back-results" class="btn btn-ghost btn-sm">← Back to Results</button>
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="dark-toggle" id="dark-toggle-review" title="Toggle dark mode">🌙</button>
+      <button id="btn-back-results" class="btn btn-ghost btn-sm">← Back to Results</button>
+    </div>
   </header>
   <div id="review-list" class="review-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════ AUTH MODAL ═════ -->
+<div id="modal-auth" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="logo" style="font-size:2rem;text-align:center;margin-bottom:0.5rem">☁️</div>
+    <h2 style="text-align:center;font-size:1.1rem;color:var(--sf-dark);margin-bottom:1.25rem">Salesforce IAM Architect</h2>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">Login</button>
+      <button class="modal-tab" id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+    <div id="modal-error" class="modal-error"></div>
+    <div class="modal-field">
+      <label>Username</label>
+      <input type="text" id="auth-username" autocomplete="username" placeholder="Enter username" />
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="auth-password" autocomplete="current-password" placeholder="Enter password" />
+    </div>
+    <div class="modal-field" id="field-confirm" style="display:none">
+      <label>Confirm Password</label>
+      <input type="password" id="auth-confirm" autocomplete="new-password" placeholder="Confirm password" />
+    </div>
+    <button id="btn-auth-submit" class="btn btn-primary btn-lg" style="margin-top:0.25rem">Login</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ SCREEN: HISTORY ══ -->
+<div id="screen-history" class="screen">
+  <header class="history-header">
+    <h2>My History</h2>
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="dark-toggle" id="dark-toggle-history" title="Toggle dark mode">🌙</button>
+      <button id="btn-back-from-history" class="btn btn-ghost btn-sm">← Back to Results</button>
+    </div>
+  </header>
+  <div class="history-list">
+    <div id="history-content"></div>
+  </div>
 </div>
 
 <script src="js/app.js"></script>
