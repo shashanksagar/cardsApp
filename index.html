@@ -4,6 +4,8 @@
 <script>
   (function() {
     if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-init');
+    var fs = localStorage.getItem('fontSize');
+    if (fs === 'large') document.documentElement.classList.add('font-large');
   })();
 </script>
 <style>
@@ -21,6 +23,7 @@
   <div style="position:fixed;top:0.75rem;right:1rem;display:flex;align-items:center;gap:0.75rem;z-index:50">
     <div id="user-chip-start" class="user-chip hidden"></div>
     <button class="dark-toggle" id="dark-toggle-start" title="Toggle dark mode">🌙</button>
+    <button class="settings-btn" onclick="showSettings()" title="Settings">⚙️</button>
   </div>
   <div class="card start-card">
     <div class="logo">☁️</div>
@@ -53,7 +56,7 @@
         <button class="mode-btn" data-mode="exam">
           <span class="mode-icon">⏱</span>
           <strong>Timed Exam</strong>
-          <small>64 questions · 1h 32m</small>
+          <small id="exam-mode-label">64 questions · 1h 32m</small>
         </button>
       </div>
     </div>
@@ -66,6 +69,8 @@
     </div>
 
     <button id="btn-start" class="btn btn-primary btn-lg">Start</button>
+    <button id="btn-drill" class="btn btn-drill btn-lg" style="margin-top:0.25rem">🎯 Drill Weak Topics</button>
+    <div id="drill-preview" class="drill-preview hidden"></div>
     <button id="btn-history-start" class="btn btn-ghost btn-lg" style="margin-top:0.25rem;font-size:0.88rem">📋 My History</button>
   </div>
 </div>
@@ -87,6 +92,7 @@
       <div id="user-chip-exam" class="user-chip hidden"></div>
       <span id="timer-display" class="timer hidden">1:32:00</span>
       <button class="dark-toggle" id="dark-toggle-exam" title="Toggle dark mode">🌙</button>
+      <button class="settings-btn" onclick="showSettings()" title="Settings">⚙️</button>
       <button id="btn-quit" class="btn btn-ghost btn-sm">✕ Quit</button>
     </div>
   </header>
@@ -111,7 +117,7 @@
         <!-- Both modes -->
         <button id="btn-check" class="btn btn-primary hidden">Check Answer</button>
         <button id="btn-next" class="btn btn-primary hidden">Next →</button>
-        <!-- Exam mode final question -->
+        <!-- Final question -->
         <button id="btn-submit" class="btn btn-success hidden">Submit Exam</button>
       </div>
     </div>
@@ -130,10 +136,17 @@
   <div style="position:fixed;top:0.75rem;right:1rem;display:flex;align-items:center;gap:0.75rem;z-index:50">
     <div id="user-chip-results" class="user-chip hidden"></div>
     <button class="dark-toggle" id="dark-toggle-results" title="Toggle dark mode">🌙</button>
+    <button class="settings-btn" onclick="showSettings()" title="Settings">⚙️</button>
   </div>
   <div class="results-card">
     <div id="result-verdict" class="result-verdict"></div>
     <h2 id="result-score" class="result-score"></h2>
+    <div id="result-stats" class="result-stats">
+      <div class="stat-box stat-answered"><span class="stat-num" id="stat-answered">0</span><span class="stat-label">Answered</span></div>
+      <div class="stat-box stat-correct"><span class="stat-num" id="stat-correct">0</span><span class="stat-label">Correct</span></div>
+      <div class="stat-box stat-incorrect"><span class="stat-num" id="stat-incorrect">0</span><span class="stat-label">Incorrect</span></div>
+      <div class="stat-box stat-skipped"><span class="stat-num" id="stat-skipped">0</span><span class="stat-label">Skipped</span></div>
+    </div>
     <p id="result-sub" class="result-sub"></p>
 
     <div id="topic-breakdown" class="topic-breakdown"></div>
@@ -152,6 +165,7 @@
     <h2>Answer Review</h2>
     <div style="display:flex;align-items:center;gap:0.75rem">
       <button class="dark-toggle" id="dark-toggle-review" title="Toggle dark mode">🌙</button>
+      <button class="settings-btn" onclick="showSettings()" title="Settings">⚙️</button>
       <button id="btn-back-results" class="btn btn-ghost btn-sm">← Back to Results</button>
     </div>
   </header>
@@ -184,12 +198,191 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════ SETTINGS MODAL ══ -->
+<div id="modal-settings" class="modal-overlay hidden">
+  <div class="modal-card settings-modal-card">
+    <div class="settings-modal-header">
+      <h2>⚙️ Settings</h2>
+      <button class="settings-close-btn" onclick="hideSettings()">✕</button>
+    </div>
+
+    <!-- ── Exam Settings ── -->
+    <div class="settings-section">
+      <div class="settings-section-title">Exam Settings</div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Passing Threshold</span>
+          <span class="settings-desc">Minimum score to pass (Salesforce default: 68%)</span>
+        </div>
+        <div class="settings-control">
+          <input type="number" id="set-pass-threshold" class="settings-input-num" min="50" max="100" value="68" />
+          <span class="settings-unit">%</span>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Exam Timer Duration</span>
+          <span class="settings-desc">Time allowed for timed exam mode</span>
+        </div>
+        <div class="settings-control">
+          <input type="number" id="set-timer-minutes" class="settings-input-num" min="10" max="300" value="92" />
+          <span class="settings-unit">min</span>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Questions per Session</span>
+          <span class="settings-desc">Limit how many questions are loaded (0 = all)</span>
+        </div>
+        <div class="settings-control">
+          <select id="set-question-limit" class="settings-select">
+            <option value="0">All questions</option>
+            <option value="10">10 questions</option>
+            <option value="20">20 questions</option>
+            <option value="30">30 questions</option>
+            <option value="40">40 questions</option>
+            <option value="custom">Custom…</option>
+          </select>
+          <input type="number" id="set-question-limit-custom" class="settings-input-num" min="1" max="200" value="25" style="display:none" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Defaults ── -->
+    <div class="settings-section">
+      <div class="settings-section-title">Defaults</div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Default Mode</span>
+          <span class="settings-desc">Pre-select mode when the app loads</span>
+        </div>
+        <div class="settings-control">
+          <select id="set-default-mode" class="settings-select">
+            <option value="practice">Practice</option>
+            <option value="exam">Timed Exam</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Default Question Set</span>
+          <span class="settings-desc">Pre-select question set when the app loads</span>
+        </div>
+        <div class="settings-control">
+          <select id="set-default-set" class="settings-select">
+            <option value="set2">IAM – Set 2</option>
+            <option value="set4">IAM – Set 4</option>
+            <option value="int_set1">Integration – Set 1</option>
+            <option value="int_wi21">Integration – Wi21</option>
+            <option value="int_set3">Integration – Set 3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Shuffle by Default</span>
+          <span class="settings-desc">Randomise question order on start</span>
+        </div>
+        <div class="settings-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="set-default-shuffle" checked />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── App Preferences ── -->
+    <div class="settings-section">
+      <div class="settings-section-title">App Preferences</div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Font Size</span>
+          <span class="settings-desc">Increase text size for easier reading</span>
+        </div>
+        <div class="settings-control">
+          <select id="set-font-size" class="settings-select">
+            <option value="normal">Normal</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Keyboard Shortcuts</span>
+          <span class="settings-desc">Press A–E to select answers, Enter to check/next</span>
+        </div>
+        <div class="settings-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="set-keyboard-shortcuts" checked />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Auto-Advance (Practice)</span>
+          <span class="settings-desc">Move to next question automatically after checking answer</span>
+        </div>
+        <div class="settings-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="set-auto-advance" />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Show Topic Labels</span>
+          <span class="settings-desc">Display topic tag on each question during exam</span>
+        </div>
+        <div class="settings-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="set-show-topics" checked />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <span class="settings-label">Confirm Before Quit</span>
+          <span class="settings-desc">Show confirmation dialog when quitting an exam</span>
+        </div>
+        <div class="settings-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="set-confirm-quit" checked />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-footer">
+      <span id="settings-save-msg" class="settings-save-msg"></span>
+      <button class="btn btn-ghost btn-sm" onclick="hideSettings()">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-settings">Save Settings</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════════ SCREEN: HISTORY ══ -->
 <div id="screen-history" class="screen">
   <header class="history-header">
     <h2>My History</h2>
     <div style="display:flex;align-items:center;gap:0.75rem">
       <button class="dark-toggle" id="dark-toggle-history" title="Toggle dark mode">🌙</button>
+      <button class="settings-btn" onclick="showSettings()" title="Settings">⚙️</button>
       <button id="btn-back-from-history" class="btn btn-ghost btn-sm">← Back</button>
     </div>
   </header>

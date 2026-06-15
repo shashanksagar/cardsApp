@@ -1,3 +1,4 @@
 node_modules/
 data/users.json
 data/progress.json
+data/settings.json

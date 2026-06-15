@@ -109,6 +109,7 @@ $('btn-auth-submit').addEventListener('click', async () => {
     saveAuth(data.token, data.username);
     updateUserChips();
     hideModal();
+    loadSettings().then(() => refreshDrillPreview());
   } catch (e) {
     errorEl.textContent = 'Cannot reach server. Is it running?';
   }
@@ -118,7 +119,150 @@ $('btn-auth-submit').addEventListener('click', async () => {
 updateUserChips();
 if (!auth.token) {
   showModal();
+} else {
+  loadSettings().then(() => refreshDrillPreview());
 }
+
+// ─── Settings ─────────────────────────────────────────────────────
+const SETTING_DEFAULTS = {
+  passThreshold:    68,
+  timerMinutes:     92,
+  questionLimit:    0,
+  defaultMode:      'practice',
+  defaultSet:       'set2',
+  defaultShuffle:   true,
+  fontSize:         'normal',
+  keyboardShortcuts: true,
+  autoAdvance:      false,
+  showTopics:       true,
+  confirmQuit:      true,
+};
+
+let appSettings = { ...SETTING_DEFAULTS };
+
+async function loadSettings() {
+  if (!auth.token) return;
+  try {
+    const resp = await fetch(`/api/settings?token=${auth.token}`);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    appSettings = { ...SETTING_DEFAULTS, ...data.settings };
+  } catch (e) {
+    // use defaults silently
+  }
+  applySettings();
+}
+
+async function persistSettings(patch) {
+  if (!auth.token) return;
+  try {
+    await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: auth.token, ...patch }),
+    });
+  } catch (e) {
+    console.warn('Could not save settings:', e);
+  }
+}
+
+function applySettings() {
+  // Font size
+  const large = appSettings.fontSize === 'large';
+  document.documentElement.classList.toggle('font-large', large);
+  localStorage.setItem('fontSize', appSettings.fontSize);
+
+  // Default mode on start screen
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === appSettings.defaultMode);
+  });
+
+  // Default question set
+  const sel = $('select-set');
+  if (sel) sel.value = appSettings.defaultSet;
+
+  // Default shuffle
+  const chk = $('chk-shuffle');
+  if (chk) chk.checked = appSettings.defaultShuffle;
+
+  // Topic label visibility
+  const topicEl = $('q-topic');
+  if (topicEl) topicEl.style.display = appSettings.showTopics ? '' : 'none';
+
+  // Update exam mode label with current timer
+  const examLabel = $('exam-mode-label');
+  if (examLabel) {
+    const m = appSettings.timerMinutes;
+    const h = Math.floor(m / 60);
+    const min = m % 60;
+    examLabel.textContent = `64 questions · ${h}h ${min > 0 ? min + 'm' : ''}`.trim();
+  }
+}
+
+function showSettings() {
+  // Populate modal with current settings
+  $('set-pass-threshold').value     = appSettings.passThreshold;
+  $('set-timer-minutes').value      = appSettings.timerMinutes;
+  $('set-default-mode').value       = appSettings.defaultMode;
+  $('set-default-set').value        = appSettings.defaultSet;
+  $('set-default-shuffle').checked  = appSettings.defaultShuffle;
+  $('set-font-size').value          = appSettings.fontSize;
+  $('set-keyboard-shortcuts').checked = appSettings.keyboardShortcuts;
+  $('set-auto-advance').checked     = appSettings.autoAdvance;
+  $('set-show-topics').checked      = appSettings.showTopics;
+  $('set-confirm-quit').checked     = appSettings.confirmQuit;
+
+  const limit = appSettings.questionLimit;
+  const presets = [0, 10, 20, 30, 40];
+  if (presets.includes(limit)) {
+    $('set-question-limit').value = String(limit);
+    $('set-question-limit-custom').style.display = 'none';
+  } else {
+    $('set-question-limit').value = 'custom';
+    $('set-question-limit-custom').value = limit;
+    $('set-question-limit-custom').style.display = '';
+  }
+
+  $('settings-save-msg').textContent = '';
+  $('modal-settings').classList.remove('hidden');
+}
+
+function hideSettings() {
+  $('modal-settings').classList.add('hidden');
+}
+
+$('set-question-limit').addEventListener('change', () => {
+  const isCustom = $('set-question-limit').value === 'custom';
+  $('set-question-limit-custom').style.display = isCustom ? '' : 'none';
+});
+
+$('btn-save-settings').addEventListener('click', async () => {
+  const limitSel = $('set-question-limit').value;
+  const limit = limitSel === 'custom'
+    ? parseInt($('set-question-limit-custom').value) || 0
+    : parseInt(limitSel);
+
+  const patch = {
+    passThreshold:     parseInt($('set-pass-threshold').value) || 68,
+    timerMinutes:      parseInt($('set-timer-minutes').value)  || 92,
+    questionLimit:     limit,
+    defaultMode:       $('set-default-mode').value,
+    defaultSet:        $('set-default-set').value,
+    defaultShuffle:    $('set-default-shuffle').checked,
+    fontSize:          $('set-font-size').value,
+    keyboardShortcuts: $('set-keyboard-shortcuts').checked,
+    autoAdvance:       $('set-auto-advance').checked,
+    showTopics:        $('set-show-topics').checked,
+    confirmQuit:       $('set-confirm-quit').checked,
+  };
+
+  appSettings = { ...appSettings, ...patch };
+  await persistSettings(patch);
+  applySettings();
+
+  $('settings-save-msg').textContent = '✓ Saved';
+  setTimeout(() => { $('settings-save-msg').textContent = ''; hideSettings(); refreshDrillPreview(); }, 800);
+});
 
 // ─── Progress ─────────────────────────────────────────────────────
 async function saveProgress(sessionData) {
@@ -189,6 +333,117 @@ modeBtns.forEach(btn => {
   });
 });
 
+// Update drill preview whenever set changes
+$('select-set').addEventListener('change', () => refreshDrillPreview());
+
+async function refreshDrillPreview() {
+  if (!auth.token) return;
+  const setId = $('select-set').value;
+  const threshold = appSettings.passThreshold;
+  try {
+    const resp = await fetch(`/api/weak-topics?set=${setId}&threshold=${threshold}&token=${auth.token}`);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    renderDrillPreview(data, threshold);
+  } catch (e) { /* silent */ }
+}
+
+function renderDrillPreview(data, threshold) {
+  const panel = $('drill-preview');
+  if (!data || data.sessionCount === 0) {
+    panel.innerHTML = `<span class="drill-no-data">No history for this set yet — complete a session first to unlock drilling.</span>`;
+    panel.classList.remove('hidden');
+    return;
+  }
+  const weak = Object.entries(data.topics)
+    .filter(([, d]) => d.weak)
+    .sort((a, b) => a[1].pct - b[1].pct);
+
+  if (weak.length === 0) {
+    panel.innerHTML = `<span class="drill-no-data">🎉 All topics above ${threshold}% — nothing to drill!</span>`;
+    panel.classList.remove('hidden');
+    return;
+  }
+
+  const rows = weak.map(([topic, d]) => {
+    const color = d.pct >= threshold * 0.75 ? '#dd7a01' : '#ba0517';
+    return `<div class="drill-topic-row">
+      <span class="drill-topic-name">${topic}</span>
+      <span class="drill-topic-pct" style="color:${color}">${d.pct}%</span>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="drill-title">🎯 ${weak.length} weak topic${weak.length > 1 ? 's' : ''} below ${threshold}%</div>
+    <div class="drill-topic-list">${rows}</div>`;
+  panel.classList.remove('hidden');
+}
+
+$('btn-drill').addEventListener('click', async () => {
+  if (!auth.token) { showModal(); return; }
+  const setId     = $('select-set').value;
+  const doShuffle = $('chk-shuffle').checked;
+  const threshold = appSettings.passThreshold;
+
+  $('btn-drill').disabled = true;
+  $('btn-drill').textContent = 'Loading…';
+
+  try {
+    const [weakResp, data] = await Promise.all([
+      fetch(`/api/weak-topics?set=${setId}&threshold=${threshold}&token=${auth.token}`),
+      loadSet(setId),
+    ]);
+
+    if (!weakResp.ok) throw new Error('Could not load weak topics');
+    const weakData = await weakResp.json();
+
+    if (weakData.sessionCount === 0) {
+      alert('No history for this set yet. Complete a regular session first!');
+      return;
+    }
+
+    const weakTopics = new Set(
+      Object.entries(weakData.topics).filter(([, d]) => d.weak).map(([t]) => t)
+    );
+
+    if (weakTopics.size === 0) {
+      alert('All topics are above the passing threshold — nothing to drill! 🎉');
+      return;
+    }
+
+    let qs = data.questions.filter(q => weakTopics.has(q.topic || 'Other'));
+    if (qs.length === 0) {
+      alert('No questions found for your weak topics in this set.');
+      return;
+    }
+    if (doShuffle) qs = shuffle(qs);
+
+    const limit = appSettings.questionLimit;
+    if (limit > 0 && qs.length > limit) qs = qs.slice(0, limit);
+
+    state.questions  = qs;
+    state.current    = 0;
+    state.mode       = 'practice'; // drill is always practice mode
+    state.selected   = [];
+    state.answers    = new Array(qs.length).fill(null);
+    state.flagged    = new Set();
+    state.started    = true;
+
+    $('header-mode-label').textContent = '🎯 Drill';
+    $('header-set-label').textContent  = data.set || setId;
+    $('timer-display').classList.add('hidden');
+    $('exam-nav').classList.add('hidden');
+
+    showScreen('exam');
+    renderQuestion();
+  } catch (e) {
+    alert('Failed to start drill: ' + e.message);
+  } finally {
+    $('btn-drill').disabled = false;
+    $('btn-drill').textContent = '🎯 Drill Weak Topics';
+  }
+});
+
 $('btn-start').addEventListener('click', async () => {
   const setId    = $('select-set').value;
   const modeBtn  = document.querySelector('.mode-btn.active');
@@ -203,6 +458,10 @@ $('btn-start').addEventListener('click', async () => {
     let qs = data.questions;
     if (doShuffle) qs = shuffle(qs);
 
+    // Apply question limit from settings
+    const limit = appSettings.questionLimit;
+    if (limit > 0 && qs.length > limit) qs = qs.slice(0, limit);
+
     state.questions = qs;
     state.current   = 0;
     state.mode      = mode;
@@ -215,7 +474,7 @@ $('btn-start').addEventListener('click', async () => {
     $('header-set-label').textContent  = data.set || setId;
 
     if (mode === 'exam') {
-      state.secondsLeft = 92 * 60; // 1h 32m
+      state.secondsLeft = appSettings.timerMinutes * 60;
       startTimer();
       $('timer-display').classList.remove('hidden');
       $('exam-nav').classList.remove('hidden');
@@ -277,6 +536,7 @@ function renderQuestion() {
   // Meta
   $('q-number').textContent = `Question ${idx + 1}`;
   $('q-topic').textContent  = q.topic || '';
+  $('q-topic').style.display = appSettings.showTopics ? '' : 'none';
   const badge = $('q-type-badge');
   badge.textContent = q.type === 'multi' ? '☑ Multi-select' : '◉ Single';
   badge.className   = `q-type-badge ${q.type}`;
@@ -375,9 +635,10 @@ function updateActionButtons() {
 
   if (state.mode === 'practice') {
     const answered = state.answers[idx] !== null;
+    const isLast   = idx === total - 1;
     $('btn-check').classList.toggle('hidden', answered || !hasSelection);
-    $('btn-next').classList.toggle('hidden', !answered || idx === total - 1);
-    $('btn-submit').classList.add('hidden');
+    $('btn-next').classList.toggle('hidden', !answered || isLast);
+    $('btn-submit').classList.toggle('hidden', !(answered && isLast));
   } else {
     // Exam mode
     $('btn-check').classList.add('hidden');
@@ -388,11 +649,12 @@ function updateActionButtons() {
 }
 
 function showPostAnswerButtons(idx) {
-  const total = state.questions.length;
+  const total  = state.questions.length;
+  const isLast = idx === total - 1;
   if (state.mode === 'practice') {
     $('btn-check').classList.add('hidden');
-    $('btn-next').classList.toggle('hidden', idx === total - 1);
-    $('btn-submit').classList.add('hidden');
+    $('btn-next').classList.toggle('hidden', isLast);
+    $('btn-submit').classList.toggle('hidden', !isLast);
   }
 }
 
@@ -411,6 +673,15 @@ $('btn-check').addEventListener('click', () => {
   applyFeedback(q, selected);
   lockChoices();
   showPostAnswerButtons(idx);
+
+  // Auto-advance in practice mode
+  if (appSettings.autoAdvance && idx < state.questions.length - 1) {
+    setTimeout(() => {
+      state.current++;
+      state.selected = [];
+      renderQuestion();
+    }, 1200);
+  }
 });
 
 function isCorrect(selected, answer) {
@@ -477,7 +748,8 @@ $('btn-flag').addEventListener('click', () => {
 });
 
 $('btn-quit').addEventListener('click', () => {
-  if (confirm('Quit this session? Progress will be lost.')) {
+  const doQuit = !appSettings.confirmQuit || confirm('Quit this session? Progress will be lost.');
+  if (doQuit) {
     clearInterval(state.timer);
     showScreen('start');
   }
@@ -530,17 +802,24 @@ function submitExam() {
 
 // ─── Results ──────────────────────────────────────────────────────
 function showResults() {
-  const total    = state.questions.length;
-  const answered = state.answers.filter(Boolean).length;
-  const correct  = state.answers.filter(a => a && a.correct).length;
-  const pct      = Math.round((correct / total) * 100);
-  const passed   = pct >= 68; // Salesforce passing ~68%
+  const total     = state.questions.length;
+  const answered  = state.answers.filter(Boolean).length;
+  const correct   = state.answers.filter(a => a && a.correct).length;
+  const incorrect = state.answers.filter(a => a && !a.correct).length;
+  const skipped   = total - answered;
+  const pct       = total ? Math.round((correct / total) * 100) : 0;
+  const threshold = appSettings.passThreshold;
+  const passed    = pct >= threshold;
 
-  $('result-verdict').textContent = passed ? '🎉' : '📖';
-  $('result-score').textContent   = `${correct} / ${total} (${pct}%)`;
-  $('result-sub').textContent     = passed
+  $('result-verdict').textContent  = passed ? '🎉' : '📖';
+  $('result-score').textContent    = `${correct} / ${total} (${pct}%)`;
+  $('stat-answered').textContent   = answered;
+  $('stat-correct').textContent    = correct;
+  $('stat-incorrect').textContent  = incorrect;
+  $('stat-skipped').textContent    = skipped;
+  $('result-sub').textContent      = passed
     ? 'Congratulations! You would pass this exam.'
-    : `You need ~68% to pass. Keep practicing!`;
+    : `You need ${threshold}% to pass. Keep practicing!`;
 
   // Topic breakdown
   const topicMap = {};
@@ -556,7 +835,8 @@ function showResults() {
   breakdown.innerHTML = '<strong style="font-size:.85rem;color:#444">By Topic</strong>';
   Object.entries(topicMap).sort((a, b) => a[0].localeCompare(b[0])).forEach(([topic, data]) => {
     const p = Math.round((data.correct / data.total) * 100);
-    const color = p >= 68 ? '#2e844a' : p >= 50 ? '#dd7a01' : '#ba0517';
+    const thr = appSettings.passThreshold;
+    const color = p >= thr ? '#2e844a' : p >= thr * 0.75 ? '#dd7a01' : '#ba0517';
     breakdown.innerHTML += `
       <div class="topic-row">
         <span class="topic-name">${topic}</span>
@@ -720,7 +1000,8 @@ function buildTopicBreakdownHtml(topicBreakdown) {
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([topic, data]) => {
       const p = Math.round((data.correct / data.total) * 100);
-      const color = p >= 68 ? 'var(--sf-green)' : p >= 50 ? 'var(--sf-orange)' : 'var(--sf-red)';
+      const thr2 = appSettings.passThreshold;
+      const color = p >= thr2 ? 'var(--sf-green)' : p >= thr2 * 0.75 ? 'var(--sf-orange)' : 'var(--sf-red)';
       return `<div class="history-topic-row">
         <span style="flex:1;font-size:0.82rem">${topic}</span>
         <div style="width:120px;height:7px;background:#ddd;border-radius:999px;overflow:hidden">
@@ -735,3 +1016,36 @@ function toggleHistoryRow(tr, idx) {
   const expand = document.getElementById(`history-expand-${idx}`);
   expand.style.display = expand.style.display === 'none' ? '' : 'none';
 }
+
+// ─── Keyboard shortcuts ───────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (!appSettings.keyboardShortcuts) return;
+  if (!screens.exam.classList.contains('active')) return;
+  // Ignore when typing in inputs
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  const key = e.key.toUpperCase();
+
+  // A–E select choices
+  if (['A','B','C','D','E'].includes(key)) {
+    const choice = document.querySelector(`.choice-item[data-key="${key}"]:not(.disabled)`);
+    if (choice) choice.click();
+    return;
+  }
+
+  // Enter: check answer or advance
+  if (e.key === 'Enter') {
+    const check = $('btn-check');
+    const next  = $('btn-next');
+    const submit = $('btn-submit');
+    if (check && !check.classList.contains('hidden')) { check.click(); return; }
+    if (next  && !next.classList.contains('hidden'))  { next.click();  return; }
+    if (submit && !submit.classList.contains('hidden')) { submit.click(); }
+  }
+
+  // F: flag question (exam mode)
+  if (key === 'F') {
+    const flag = $('btn-flag');
+    if (flag && !flag.classList.contains('hidden')) flag.click();
+  }
+});

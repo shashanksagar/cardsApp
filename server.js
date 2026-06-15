@@ -7,14 +7,16 @@ const fs      = require('fs');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-const DATA_DIR      = path.join(__dirname, 'data');
-const USERS_FILE    = path.join(DATA_DIR, 'users.json');
-const PROGRESS_FILE = path.join(DATA_DIR, 'progress.json');
+const DATA_DIR       = path.join(__dirname, 'data');
+const USERS_FILE     = path.join(DATA_DIR, 'users.json');
+const PROGRESS_FILE  = path.join(DATA_DIR, 'progress.json');
+const SETTINGS_FILE  = path.join(DATA_DIR, 'settings.json');
 
 // Auto-create data directory and files
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(USERS_FILE))    fs.writeFileSync(USERS_FILE,    JSON.stringify({ users: [] }));
 if (!fs.existsSync(PROGRESS_FILE)) fs.writeFileSync(PROGRESS_FILE, JSON.stringify({ sessions: [] }));
+if (!fs.existsSync(SETTINGS_FILE)) fs.writeFileSync(SETTINGS_FILE, JSON.stringify({ settings: [] }));
 
 app.use(express.json());
 
@@ -23,7 +25,7 @@ app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js',  express.static(path.join(__dirname, 'js')));
 
 // Serve question-set JSON files but block auth/progress data files
-const PRIVATE_DATA = new Set(['users.json', 'progress.json']);
+const PRIVATE_DATA = new Set(['users.json', 'progress.json', 'settings.json']);
 app.get('/data/:file', (req, res) => {
   if (PRIVATE_DATA.has(req.params.file)) return res.status(404).end();
   res.sendFile(path.join(DATA_DIR, req.params.file));
@@ -118,6 +120,74 @@ app.get('/api/progress', requireAuth, (req, res) => {
     const db = readJSON(PROGRESS_FILE);
     const userSessions = db.sessions.filter(s => s.userId === req.username);
     res.json({ sessions: userSessions });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─── GET /api/weak-topics ────────────────────────────────────────
+// Returns aggregated topic scores for the user across sessions for a given set.
+// Query params: set (question set id), threshold (pass %, default 68)
+app.get('/api/weak-topics', requireAuth, (req, res) => {
+  try {
+    const setId     = req.query.set;
+    const threshold = parseInt(req.query.threshold) || 68;
+    if (!setId) return res.status(400).json({ error: 'set param required' });
+
+    const db = readJSON(PROGRESS_FILE);
+    const sessions = db.sessions.filter(s =>
+      s.userId === req.username && String(s.set) === String(setId)
+    );
+    if (sessions.length === 0) return res.json({ topics: {}, sessionCount: 0 });
+
+    // Aggregate topic correct/total across all sessions
+    const topics = {};
+    sessions.forEach(session => {
+      const tb = session.topicBreakdown || {};
+      Object.entries(tb).forEach(([topic, data]) => {
+        if (!topics[topic]) topics[topic] = { correct: 0, total: 0 };
+        topics[topic].correct += data.correct || 0;
+        topics[topic].total   += data.total   || 0;
+      });
+    });
+
+    // Tag each topic with its aggregate pct and whether it's weak
+    const result = {};
+    Object.entries(topics).forEach(([topic, data]) => {
+      const pct = data.total ? Math.round((data.correct / data.total) * 100) : 0;
+      result[topic] = { ...data, pct, weak: pct < threshold };
+    });
+
+    res.json({ topics: result, sessionCount: sessions.length });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─── GET /api/settings ───────────────────────────────────────────
+app.get('/api/settings', requireAuth, (req, res) => {
+  try {
+    const db = readJSON(SETTINGS_FILE);
+    const entry = db.settings.find(s => s.userId === req.username);
+    res.json({ settings: entry ? entry.settings : {} });
+  } catch (e) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─── POST /api/settings ──────────────────────────────────────────
+app.post('/api/settings', requireAuth, (req, res) => {
+  try {
+    const { token, ...newSettings } = req.body;
+    const db = readJSON(SETTINGS_FILE);
+    const idx = db.settings.findIndex(s => s.userId === req.username);
+    if (idx >= 0) {
+      db.settings[idx].settings = { ...db.settings[idx].settings, ...newSettings };
+    } else {
+      db.settings.push({ userId: req.username, settings: newSettings });
+    }
+    writeJSON(SETTINGS_FILE, db);
+    res.json({ ok: true });
   } catch (e) {
     res.status(500).json({ error: 'Server error' });
   }
