@@ -10,6 +10,24 @@ const { Pool } = require('pg');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// ─── Logger ───────────────────────────────────────────────────────
+function ts() { return new Date().toISOString(); }
+const log = {
+  info:  (...a) => console.log( `[${ts()}] INFO `, ...a),
+  warn:  (...a) => console.warn( `[${ts()}] WARN `, ...a),
+  error: (...a) => console.error(`[${ts()}] ERROR`, ...a),
+};
+
+// Log every request
+app.use((req, _res, next) => {
+  log.info(`${req.method} ${req.path}`);
+  next();
+});
+
+// Catch unhandled promise rejections and exceptions
+process.on('unhandledRejection', (reason) => log.error('Unhandled rejection:', reason));
+process.on('uncaughtException',  (err)    => log.error('Uncaught exception:', err));
+
 // ─── Database ──────────────────────────────────────────────────────
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -34,9 +52,9 @@ async function initDB() {
       data       JSONB NOT NULL DEFAULT '{}'
     );
   `);
-  console.log('Database ready');
+  log.info('Database ready');
 }
-initDB().catch(e => console.error('DB init error:', e));
+initDB().catch(e => log.error('DB init error:', e));
 
 // ─── In-memory sessions (token → username) ────────────────────────
 const sessions = {};
@@ -67,7 +85,10 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 // ─── Auth middleware ───────────────────────────────────────────────
 function requireAuth(req, res, next) {
   const token = req.body?.token || req.query?.token;
-  if (!token || !sessions[token]) return res.status(401).json({ error: 'Unauthorized' });
+  if (!token || !sessions[token]) {
+    log.warn(`Unauthorized ${req.method} ${req.path} — invalid/missing token`);
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   req.username = sessions[token];
   next();
 }
@@ -87,7 +108,7 @@ app.post('/api/register', async (req, res) => {
     sessions[token] = username;
     res.json({ token, username });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -98,16 +119,22 @@ app.post('/api/login', async (req, res) => {
   if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
   try {
     const result = await pool.query('SELECT password FROM users WHERE username = $1', [username]);
-    if (!result.rows.length) return res.status(401).json({ error: 'Invalid username or password' });
+    if (!result.rows.length) {
+      log.warn(`Login failed — unknown user: ${username}`);
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
 
     const match = await bcrypt.compare(password, result.rows[0].password);
-    if (!match) return res.status(401).json({ error: 'Invalid username or password' });
+    if (!match) {
+      log.warn(`Login failed — wrong password for user: ${username}`);
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
 
     const token = makeToken();
     sessions[token] = username;
     res.json({ token, username });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -122,7 +149,7 @@ app.post('/api/progress', requireAuth, async (req, res) => {
     );
     res.json({ ok: true });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -136,7 +163,7 @@ app.get('/api/progress', requireAuth, async (req, res) => {
     );
     res.json({ sessions: result.rows.map(r => r.session) });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -172,7 +199,7 @@ app.get('/api/weak-topics', requireAuth, async (req, res) => {
 
     res.json({ topics: out, sessionCount: result.rows.length });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -183,7 +210,7 @@ app.get('/api/settings', requireAuth, async (req, res) => {
     const result = await pool.query('SELECT data FROM settings WHERE username = $1', [req.username]);
     res.json({ settings: result.rows.length ? result.rows[0].data : {} });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -198,9 +225,9 @@ app.post('/api/settings', requireAuth, async (req, res) => {
     `, [req.username, JSON.stringify(newSettings)]);
     res.json({ ok: true });
   } catch (e) {
-    console.error(e);
+    log.error(e.message, { code: e.code, stack: e.stack });
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-app.listen(PORT, () => console.log(`cardsApp running at http://localhost:${PORT}`));
+app.listen(PORT, () => log.info(`cardsApp running at http://localhost:${PORT}`));
