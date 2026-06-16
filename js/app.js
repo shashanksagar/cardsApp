@@ -106,10 +106,21 @@ $('btn-auth-submit').addEventListener('click', async () => {
 
   const endpoint = currentTab === 'login' ? '/api/login' : '/api/register';
   try {
+    let body = { username, password };
+
+    if (currentTab === 'register') {
+      // Fetch a server-issued challenge token (proves the form was loaded normally)
+      const chResp = await fetch('/api/challenge');
+      const chData = await chResp.json();
+      body.challenge = chData.challenge;
+      // Include honeypot value (should always be empty for real users)
+      body.hp = $('auth-hp').value;
+    }
+
     const resp = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify(body),
     });
     const data = await resp.json();
     if (!resp.ok) { errorEl.textContent = data.error || 'Something went wrong.'; return; }

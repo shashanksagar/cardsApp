@@ -1,11 +1,12 @@
 'use strict';
 
-const express = require('express');
-const path    = require('path');
-const fs      = require('fs');
-const bcrypt  = require('bcryptjs');
-const crypto  = require('crypto');
-const { Pool } = require('pg');
+const express   = require('express');
+const path      = require('path');
+const fs        = require('fs');
+const bcrypt    = require('bcryptjs');
+const crypto    = require('crypto');
+const { Pool }  = require('pg');
+const rateLimit = require('express-rate-limit');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -82,6 +83,58 @@ app.get('/data/:file', (req, res) => {
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
+// ─── Bot / spam protection ────────────────────────────────────────
+
+// 1. Rate limit: max 5 registrations per IP per hour
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    log.warn(`Rate limit hit on /api/register from ${req.ip}`);
+    res.status(429).json({ error: 'Too many accounts created from this IP. Try again in an hour.' });
+  },
+});
+
+// 2. Rate limit login: max 10 attempts per IP per 15 min
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    log.warn(`Rate limit hit on /api/login from ${req.ip}`);
+    res.status(429).json({ error: 'Too many login attempts. Try again in 15 minutes.' });
+  },
+});
+
+// 3. Challenge tokens: server issues a signed token; client must echo it back
+//    This stops bots that POST directly without loading the page first.
+const CHALLENGE_SECRET = process.env.CHALLENGE_SECRET || crypto.randomBytes(32).toString('hex');
+const CHALLENGE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+function makeChallenge() {
+  const ts  = Date.now().toString(36);
+  const sig = crypto.createHmac('sha256', CHALLENGE_SECRET).update(ts).digest('hex').slice(0, 16);
+  return `${ts}.${sig}`;
+}
+
+function verifyChallenge(token) {
+  if (!token) return false;
+  const [ts, sig] = token.split('.');
+  if (!ts || !sig) return false;
+  const age = Date.now() - parseInt(ts, 36);
+  if (age < 0 || age > CHALLENGE_TTL_MS) return false;
+  const expected = crypto.createHmac('sha256', CHALLENGE_SECRET).update(ts).digest('hex').slice(0, 16);
+  return crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
+}
+
+// Endpoint: GET /api/challenge — client fetches this before registering
+app.get('/api/challenge', (req, res) => {
+  res.json({ challenge: makeChallenge() });
+});
+
 // ─── Auth middleware ───────────────────────────────────────────────
 function requireAuth(req, res, next) {
   const token = req.body?.token || req.query?.token;
@@ -94,9 +147,31 @@ function requireAuth(req, res, next) {
 }
 
 // ─── POST /api/register ───────────────────────────────────────────
-app.post('/api/register', async (req, res) => {
-  const { username, password } = req.body;
+app.post('/api/register', registerLimiter, async (req, res) => {
+  const { username, password, challenge, hp } = req.body;
+
+  // Honeypot: bots fill hidden fields, humans don't
+  if (hp) {
+    log.warn(`Honeypot triggered on /api/register from ${req.ip}`);
+    return res.status(400).json({ error: 'Registration failed.' });
+  }
+
+  // Challenge token: must have been issued by this server within 10 min
+  if (!verifyChallenge(challenge)) {
+    log.warn(`Invalid challenge on /api/register from ${req.ip}`);
+    return res.status(400).json({ error: 'Invalid or expired request. Please refresh and try again.' });
+  }
+
   if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+
+  // Username rules: 3–30 chars, alphanumeric + underscore only
+  if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+    return res.status(400).json({ error: 'Username must be 3–30 characters (letters, numbers, underscore only).' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+  }
+
   try {
     const existing = await pool.query('SELECT username FROM users WHERE username = $1', [username]);
     if (existing.rows.length) return res.status(409).json({ error: 'Username already taken' });
@@ -114,7 +189,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // ─── POST /api/login ──────────────────────────────────────────────
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
   try {

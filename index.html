@@ -201,6 +201,9 @@
       <label>Confirm Password</label>
       <input type="password" id="auth-confirm" autocomplete="new-password" placeholder="Confirm password" />
     </div>
+    <!-- Honeypot: hidden from real users, bots fill it in -->
+    <input type="text" id="auth-hp" name="website" autocomplete="off"
+           style="display:none;position:absolute;left:-9999px" tabindex="-1" aria-hidden="true" />
     <button id="btn-auth-submit" class="btn btn-primary btn-lg" style="margin-top:0.25rem">Login</button>
   </div>
 </div>
