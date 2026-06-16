@@ -47,12 +47,14 @@ function clearAuth() {
 function updateUserChips() {
   document.querySelectorAll('.user-chip').forEach(chip => {
     if (auth.username) {
-      chip.innerHTML = `<span>👤 ${auth.username}</span><button onclick="logout()">Logout</button>`;
+      chip.innerHTML = `<span>👤 ${auth.username}</span>`;
       chip.classList.remove('hidden');
     } else {
       chip.classList.add('hidden');
     }
   });
+  const logoutBtn = $('btn-logout-start');
+  if (logoutBtn) logoutBtn.classList.toggle('hidden', !auth.username);
 }
 
 function logout() {
@@ -60,6 +62,11 @@ function logout() {
   updateUserChips();
   showModal();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = $('btn-logout-start');
+  if (logoutBtn) logoutBtn.addEventListener('click', logout);
+});
 
 // ─── Auth modal ───────────────────────────────────────────────────
 let currentTab = 'login';
