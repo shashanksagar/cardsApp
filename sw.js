@@ -1,4 +1,4 @@
-const CACHE = 'sf-exam-v1';
+const CACHE = 'sf-exam-v2';
 const PRECACHE = [
   '/',
   '/css/styles.css',
